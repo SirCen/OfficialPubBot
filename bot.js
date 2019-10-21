@@ -71,8 +71,15 @@ client.on('message', function (user, userID, channelID, message, evt, guild, mem
               client.sendMessage({
                 to: channelID,
                 message: 'Short'
-              })
+              });
             break;
+            case 'max':
+              client.sendMessage({
+                to: channelID,
+                message: '시간이'
+              });
+            break;
+//default statement, if command is incorrect
             default:
             client.sendMessage({
               to: channelID,
@@ -87,27 +94,25 @@ client.on('message', function (user, userID, channelID, message, evt) {
   var found;
   var foundAt;
   var newMessage = " ";
+  var othernewMessage = " ";
   var length = stringArray.length;
-  console.log(stringArray[1]);
   if(message != newMessage) {
     for(let i = 0; i < length; i++){
       if(stringArray[i] === "I'm" | stringArray[i] === "Im" | stringArray[i] === "im"){
-        console.log("here");
         foundAt = i;
         found = true;
       }
     }
+
     for (let i = foundAt; length > i+1; i++){
-      console.log("here1");
       newMessage = newMessage + stringArray[i+1] + " ";
     }
-    //newMessage = newMessage + " ";
+    newMessage = " " + newMessage.trim();
     if(found && newMessage !== " Pub Bot"){
-      console.log("here2");
       client.sendMessage({
         to: channelID,
         message: "Hi" + newMessage + ", I am Pub Bot"
-      })
+      });
     }
   }
     // if (message.substring(0,2)=="im"|| message.substring(0,2)=="Im") {
