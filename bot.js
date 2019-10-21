@@ -4,6 +4,7 @@ var auth = require('./auth.json');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const prefix = "!";
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -71,12 +72,6 @@ client.on('message', function (user, userID, channelID, message, evt, guild, mem
                 to: channelID,
                 message: 'Short'
               })
-            break;
-            case 'members':
-              client.sendMessage({
-                to: channelID,
-                message: 'Total members: ' + guild.member.filter(member => !member.user.bot).size
-              });
             break;
             default:
             client.sendMessage({
