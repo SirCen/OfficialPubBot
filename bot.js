@@ -94,7 +94,6 @@ client.on('message', function (user, userID, channelID, message, evt) {
   var found;
   var foundAt;
   var newMessage = " ";
-  var othernewMessage = " ";
   var length = stringArray.length;
   if(message != newMessage) {
     for(let i = 0; i < length; i++){
@@ -103,7 +102,6 @@ client.on('message', function (user, userID, channelID, message, evt) {
         found = true;
       }
     }
-
     for (let i = foundAt; length > i+1; i++){
       newMessage = newMessage + stringArray[i+1] + " ";
     }
@@ -115,16 +113,4 @@ client.on('message', function (user, userID, channelID, message, evt) {
       });
     }
   }
-    // if (message.substring(0,2)=="im"|| message.substring(0,2)=="Im") {
-    //   client.sendMessage({
-    //     to: channelID,
-    //     message: "Hi " + message.substring(3) + ", I'm Pub Bot"
-    //   })
-    // }
-    // else if (message.substring(0,3)=="I'm") {
-    //   client.sendMessage({
-    //     to: channelID,
-    //     message: "Hi " + message.substring(4) + ", I'm Pub Bot"
-    //   })
-    // }
-  });
+});
