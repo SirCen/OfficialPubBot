@@ -79,6 +79,21 @@ client.on('message', function (user, userID, channelID, message, evt, guild, mem
                 message: '시간이'
               });
             break;
+            case 'chris':
+              client.sendMessage({
+                to: channelID,
+                message: "My great creator"
+              });
+            break;
+            case 'cody':
+              // var cody = new Discord.User;
+              // cody.username = "CricketKamikaze"
+              // cody.kick();
+              client.sendMessage({
+                to: channelID,
+                message: "magine bein a bitch :))\ncould not be me :))"
+              });
+            break;
 //default statement, if command is incorrect
             default:
             client.sendMessage({
