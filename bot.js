@@ -114,3 +114,15 @@ client.on('message', function (user, userID, channelID, message, evt) {
     }
   }
 });
+client.on('message', function (user, userID, channelID, message, evt) {
+  //take in message, put into array, search for "yurr", respond with message.
+  var stringArray = message.split(' ');
+  for ( let i = 0; i < stringArray.length; i++) {
+    if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
+      client.sendMessage ({
+        to: channelID,
+        message: "I agree with the above statement"
+      });
+    }
+  }
+});
