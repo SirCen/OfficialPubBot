@@ -61,22 +61,32 @@ client.on('message', function (user, userID, channelID, message, evt, guild, mem
                 });
               }
             break;
+            //sam
             case 'sam':
               client.sendMessage({
                 to: channelID,
                 message: 'A good kid :))'
               });
             break;
+            //owen
             case 'owen':
               client.sendMessage({
                 to: channelID,
                 message: 'Short'
               });
             break;
+            //max
             case 'max':
               client.sendMessage({
                 to: channelID,
                 message: '시간이'
+              });
+            break;
+            //tony
+            case 'tony':
+              client.sendMessage({
+                to: channelID,
+                message: 'Yurr'
               });
             break;
 //default statement, if command is incorrect
