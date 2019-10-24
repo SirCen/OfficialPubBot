@@ -82,11 +82,19 @@ client.on('message', function (user, userID, channelID, message, evt, guild, mem
                 message: '시간이'
               });
             break;
-            //tony
-            case 'tony':
+            case 'chris':
               client.sendMessage({
                 to: channelID,
-                message: 'Yurr'
+                message: "My great creator"
+              });
+            break;
+            case 'cody':
+              // var cody = new Discord.User;
+              // cody.username = "CricketKamikaze"
+              // cody.kick();
+              client.sendMessage({
+                to: channelID,
+                message: "magine bein a bitch :))\ncould not be me :))"
               });
             break;
 //default statement, if command is incorrect
@@ -120,6 +128,18 @@ client.on('message', function (user, userID, channelID, message, evt) {
       client.sendMessage({
         to: channelID,
         message: "Hi" + newMessage + ", I am Pub Bot"
+      });
+    }
+  }
+});
+client.on('message', function (user, userID, channelID, message, evt) {
+  //take in message, put into array, search for "yurr", respond with message.
+  var stringArray = message.split(' ');
+  for ( let i = 0; i < stringArray.length; i++) {
+    if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
+      client.sendMessage ({
+        to: channelID,
+        message: "I agree with the above statement"
       });
     }
   }
