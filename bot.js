@@ -4,6 +4,8 @@ var auth = require('./auth.json');
 const ytdl = require('ytdl-core');
 const queue = new Map();
 const prefix = "!";
+const botID = "608365015610949661";
+var commandUsed = false;
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -30,84 +32,79 @@ client.on('ready', function (evt) {
 //});
 client.on('message', function (user, userID, channelID, message, evt, guild, member) {
     // Our bot needs to know if it will execute a command
-    if(userID != "608365015610949661") {
+    if(userID != botID && message.substring(0, 1) == prefix && !commandUsed) {
     // It will listen for messages that will start with `!`
-      if (message.substring(0, 1) == prefix) {
-          var args = message.substring(1).split(' ');
-          var cmd = args[0];
-
-          args = args.splice(1);
-          switch(cmd) {
-              // !ping
-              case 'ping':
-                  client.sendMessage({
-                      to: channelID,
-                      message: 'Pong!'
-                  });
-              break;
-              // Just add any case commands if you want to..
-              //!hot
-              case 'hot':
-                var rand = Math.floor(Math.random()*2);
-                if (rand == 0) {
-                  client.sendMessage({
-                    to: channelID,
-                    message: message.substring(4) + ' is HOT!'
-                });
-              }
-                else if (rand == 1) {
-                  client.sendMessage({
-                    to: channelID,
-                    message: message.substring(4) + ' is NOT HOT!'
-                  });
-                }
-              break;
-              //sam
-              case 'sam':
-                client.sendMessage({
-                  to: channelID,
-                  message: 'A good kid :))'
-                });
-              break;
-              //owen
-              case 'owen':
-                client.sendMessage({
-                  to: channelID,
-                  message: 'Short'
-                });
-              break;
-              //max
-              case 'max':
-                client.sendMessage({
-                  to: channelID,
-                  message: '시간이'
-                });
-              break;
-              case 'chris':
-                client.sendMessage({
-                  to: channelID,
-                  message: "My great creator"
-                });
-              break;
-              case 'cody':
-                // var cody = new Discord.User;
-                // cody.username = "CricketKamikaze"
-                // cody.kick();
-                client.sendMessage({
-                  to: channelID,
-                  message: "magine bein a bitch :))\ncould not be me :))"
-                });
-              break;
-  //default statement, if command is incorrect
-              default:
-              client.sendMessage({
-                to: channelID,
-                message: 'That is not a valid command, please try again :))'
-              });
-              break;
-            }
-          }
+      var args = message.substring(1).split(' ');
+      var cmd = args[0];
+      args = args.splice(1);
+      switch(cmd) {
+      // Just add any case commands if you want to..
+      // !ping
+        case 'ping':
+          client.sendMessage({
+            to: channelID,
+            message: 'Pong!'
+          });
+        break;
+     //!hot
+        case 'hot':
+          var rand = Math.floor(Math.random()*2);
+          if (rand == 0) {
+            client.sendMessage({
+              to: channelID,
+              message: message.substring(4) + ' is HOT!'
+            });
+          }else if (rand == 1) {
+            client.sendMessage({
+              to: channelID,
+              message: message.substring(4) + ' is NOT HOT!'
+            });
         }
+        break;
+        //sam
+        case 'sam':
+          client.sendMessage({
+            to: channelID,
+            message: 'A good kid :))'
+          });
+        break;
+       //owen
+        case 'owen':
+          client.sendMessage({
+            to: channelID,
+            message: 'Short'
+          });
+        break;
+      //max
+        case 'max':
+          client.sendMessage({
+            to: channelID,
+            message: '시간이'
+          });
+        break;
+        case 'chris':
+          client.sendMessage({
+            to: channelID,
+            message: "My great creator"
+          });
+        break;
+        case 'cody':
+          client.sendMessage({
+            to: channelID,
+            message: "magine bein a bitch :))\ncould not be me :))"
+          });
+        break;
+    //default statement, if command is incorrect
+        default:
+          client.sendMessage({
+            to: channelID,
+            message: 'That is not a valid command, please try again :))'
+          });
+        break;
+      }
+    }else {
+      commandUsed = true;
+    }
 });
 client.on('message', function (user, userID, channelID, message, evt) {
   var stringArray = message.split(' ');
@@ -115,18 +112,18 @@ client.on('message', function (user, userID, channelID, message, evt) {
   var foundAt;
   var newMessage = " ";
   var length = stringArray.length;
-  if(message != newMessage | userID === "608365015610949661") {
-    for(let i = 0; i < length; i++){
+  if(userID != botID && commandUsed && !message === newMessage) {
+    for(let i = 0; i < length; i++) {
       if(stringArray[i] === "I'm" | stringArray[i] === "Im" | stringArray[i] === "im"){
         foundAt = i;
         found = true;
       }
     }
-    for (let i = foundAt; length > i+1; i++){
+    for (let i = foundAt; length > i+1; i++) {
       newMessage = newMessage + stringArray[i+1] + " ";
     }
     newMessage = " " + newMessage.trim();
-    if(found && newMessage !== "Pub Bot"){
+    if(found && newMessage !== " Pub Bot") {
       client.sendMessage({
         to: channelID,
         message: "Hi" + newMessage + ", I'm Pub Bot"
@@ -137,14 +134,14 @@ client.on('message', function (user, userID, channelID, message, evt) {
 client.on('message', function (user, userID, channelID, message, evt) {
   //take in message, put into array, search for "yurr", respond with message.
   var stringArray = message.split(' ');
-  if(userID != "608365015610949661") {
-    for ( let i = 0; i < stringArray.length; i++) {
-      if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
-        client.sendMessage ({
-          to: channelID,
-          message: "I agree with the above statement"
-        });
+  if(userID != botID && commandUsed) {
+      for ( let i = 0; i < stringArray.length; i++) {
+        if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
+          client.sendMessage ({
+            to: channelID,
+            message: "I agree with the above statement"
+          });
+        }
       }
     }
-  }
 });

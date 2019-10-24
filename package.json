@@ -1,5 +1,5 @@
 {
-	"name": "greeter-bot",
+	"name": "Pub-Bot",
 	"version": "1.0.0",
 	"description": "Pub's Bot",
 	"main": "bot.js",
