@@ -22,6 +22,7 @@ client.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.username + ' - (' + client.id + ')');
+    client.setPresence({game : { name : 'with rope'}, status : 'online'});
 });
 
 //bot.on('guildMemberAdd', member => {
@@ -32,6 +33,7 @@ client.on('ready', function (evt) {
 //});
 client.on('message', function (user, userID, channelID, message, evt, guild, member) {
     // Our bot needs to know if it will execute a command
+    commandUsed = false;
     if(userID != botID && message.substring(0, 1) == prefix && !commandUsed) {
     // It will listen for messages that will start with `!`
       var args = message.substring(1).split(' ');
@@ -112,7 +114,7 @@ client.on('message', function (user, userID, channelID, message, evt) {
   var foundAt;
   var newMessage = " ";
   var length = stringArray.length;
-  if(userID != botID && commandUsed && !message === newMessage) {
+  if(userID != botID && commandUsed && message != newMessage) {
     for(let i = 0; i < length; i++) {
       if(stringArray[i] === "I'm" | stringArray[i] === "Im" | stringArray[i] === "im"){
         foundAt = i;
@@ -129,12 +131,15 @@ client.on('message', function (user, userID, channelID, message, evt) {
         message: "Hi" + newMessage + ", I'm Pub Bot"
       });
     }
+  }else {
+    commandUsed = true;
   }
 });
 client.on('message', function (user, userID, channelID, message, evt) {
   //take in message, put into array, search for "yurr", respond with message.
   var stringArray = message.split(' ');
-  if(userID != botID && commandUsed) {
+
+  if(userID != botID & commandUsed) {
       for ( let i = 0; i < stringArray.length; i++) {
         if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
           client.sendMessage ({
@@ -143,5 +148,7 @@ client.on('message', function (user, userID, channelID, message, evt) {
           });
         }
       }
+    }else {
+      commandUsed = true;
     }
 });
