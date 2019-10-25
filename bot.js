@@ -116,9 +116,14 @@ client.on('message', function (user, userID, channelID, message, evt) {
   var length = stringArray.length;
   if(userID != botID && commandUsed && message != newMessage) {
     for(let i = 0; i < length; i++) {
-      if(stringArray[i] === "I'm" | stringArray[i] === "Im" | stringArray[i] === "im"){
+      if(stringArray[i] === "I'm" | stringArray[i] === "Im" | stringArray[i] === "im") {
         foundAt = i;
         found = true;
+      } else if (!found && (stringArray[i] === "yurr" | stringArray[i] === "Yurr")) {
+        client.sendMessage ({
+          to: channelID,
+          message: "I agree with the above statement"
+        });
       }
     }
     for (let i = foundAt; length > i+1; i++) {
@@ -135,20 +140,20 @@ client.on('message', function (user, userID, channelID, message, evt) {
     commandUsed = true;
   }
 });
-client.on('message', function (user, userID, channelID, message, evt) {
-  //take in message, put into array, search for "yurr", respond with message.
-  var stringArray = message.split(' ');
-
-  if(userID != botID & commandUsed) {
-      for ( let i = 0; i < stringArray.length; i++) {
-        if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
-          client.sendMessage ({
-            to: channelID,
-            message: "I agree with the above statement"
-          });
-        }
-      }
-    }else {
-      commandUsed = true;
-    }
-});
+// client.on('message', function (user, userID, channelID, message, evt) {
+//   //take in message, put into array, search for "yurr", respond with message.
+//   var stringArray = message.split(' ');
+//
+//   if(userID != botID && commandUsed) {
+//       for ( let i = 0; i < stringArray.length; i++) {
+//         if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
+//           client.sendMessage ({
+//             to: channelID,
+//             message: "I agree with the above statement"
+//           });
+//         }
+//       }
+//     }else {
+//       commandUsed = true;
+//     }
+// });
