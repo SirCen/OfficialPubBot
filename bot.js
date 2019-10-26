@@ -96,6 +96,18 @@ client.on('message', function (user, userID, channelID, message, evt, guild, mem
             message: "magine bein a bitch :))\ncould not be me :))"
           });
         break;
+        case '8ball':
+          var rand = Math.floor(Math.random()*20);
+          var ballAnswers = ["It is certain", "It is decidedly so", "Without a doubt", "Yes, definitely", "You may rely on it",
+                            "As I see it, yes", "Most likely", "Outlook good", "Yes", "All signs point to yes",
+                            "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now",
+                            "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no",
+                            "Outlook not so good", "Very doubtful"];
+          client.sendMessage({
+            to: channelID,
+            message: ballAnswers[rand]
+          });
+        break;
     //default statement, if command is incorrect
         default:
           client.sendMessage({
@@ -140,20 +152,3 @@ client.on('message', function (user, userID, channelID, message, evt) {
     commandUsed = true;
   }
 });
-// client.on('message', function (user, userID, channelID, message, evt) {
-//   //take in message, put into array, search for "yurr", respond with message.
-//   var stringArray = message.split(' ');
-//
-//   if(userID != botID && commandUsed) {
-//       for ( let i = 0; i < stringArray.length; i++) {
-//         if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
-//           client.sendMessage ({
-//             to: channelID,
-//             message: "I agree with the above statement"
-//           });
-//         }
-//       }
-//     }else {
-//       commandUsed = true;
-//     }
-// });
