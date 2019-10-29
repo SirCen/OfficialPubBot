@@ -25,11 +25,11 @@ client.on('ready', function (evt) {
     client.setPresence({game : { name : 'with rope'}, status : 'online'});
 });
 
-client.on('guildMemberAdd', member => {
-  console.log('User' + member.username + 'has joined the server!');
+client.on('guildMemberAdd', guildMember => {
+ console.log('User ' + guildMember.username + ' has joined the server!');
 
- var role = member.server.find(role => role.name === 'Test');
- member.addRole(role).catch(console.error);
+ var newRole = guildMember.guild.roles('name','Test');
+ guildMember.addRole(newRole);
 });
 client.on('message', function (user, userID, channelID, message, evt, guild, member) {
     // Our bot needs to know if it will execute a command
