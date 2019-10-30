@@ -29,7 +29,7 @@ client.on('guildMemberAdd', guildMember => {
  console.log('User ' + guildMember.username + ' has joined the server!');
 
  //var newRole = guildMember.guild.roles('name','Test');
- guildMember.roles.add('Test');
+ guildMember.addRole('Test');
 });
 client.on('message', function (user, userID, channelID, message, evt, guild, member) {
     // Our bot needs to know if it will execute a command
