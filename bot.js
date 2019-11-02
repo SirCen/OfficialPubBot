@@ -1,11 +1,8 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const logger = require('winston');
-const ytdl = require('ytdl-core');
-const queue = new Map();
 const { prefix, token } = require('./config.json');
-const botID = "608365015610949661";
-var commandUsed = false;
+var commandUsed = false
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
