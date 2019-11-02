@@ -8,9 +8,13 @@
 		"discord-sensei": "^1.0.8",
 		"discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
 		"discord.js": "^11.5.1",
+		"discord.js-commando": "^0.10.0",
 		"ffmpeg-binaries": "^4.0.0",
+		"fs": "0.0.1-security",
 		"mysql": "^2.17.1",
 		"opusscript": "0.0.7",
+		"path": "^0.12.7",
+		"sqlite": "^3.0.3",
 		"winston": "^3.2.1",
 		"ytdl-core": "^0.29.6"
 	},
