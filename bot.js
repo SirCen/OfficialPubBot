@@ -6,12 +6,14 @@ const queue = new Map();
 const { prefix, token } = require('./config.json');
 const botID = "608365015610949661";
 var commandUsed = false;
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
     colorize: true
 });
 logger.level = 'debug';
+
 // Initialize Discord Bot
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -21,6 +23,7 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
+
 //logs and sets activity when bot is ready
 client.on('ready', () => {
     logger.info('Connected');
@@ -28,11 +31,13 @@ client.on('ready', () => {
     logger.info(client.user.username + ' - (' + client.user.id + ')');
     client.user.setActivity('Fromis_9', { type: 'LISTENING' });
 });
+
 //add role on join
 client.on('guildMemberAdd', guildMember => {
  var newRole = guildMember.guild.roles.find(role => role.name === 'Test');
  guildMember.addRole(newRole);
 });
+
 //ping
 client.on('message', message => {
   if(commandUsed && message.author.bot){
@@ -102,40 +107,4 @@ let n = str.search("!hot");
     }
   }
 });
-// client.on('message', function (user, userID, channelID, message, evt, guild, member) {
-//     // Our bot needs to know if it will execute a command
-//     commandUsed = false;
-//     if(userID != botID && message.substring(0, 1) == prefix && !commandUsed) {
-//     // It will listen for messages that will start with `!`
-//       var args = message.substring(1).split(' ');
-//       var cmd = args[0];
-//       args = args.splice(1);
-//       switch(cmd) {
-//
-//         //sam
-//         case 'sam':
-//           client.sendMessage({
-//             to: channelID,
-//             message: 'A good kid :))'
-//           });
-//         break;
-//        //owen
-//         case 'owen':
-//           client.sendMessage({
-//             to: channelID,
-//             message: 'Short'
-//           });
-//         break;
-//         case 'chris':
-//           client.sendMessage({
-//             to: channelID,
-//             message: "My great creator"
-//           });
-//         break;
-//         case 'cody':
-//           client.sendMessage({
-//             to: channelID,
-//             message: "magine bein a bitch :))\ncould not be me :))"
-//           });
-// });
 client.login(token);
