@@ -2,8 +2,9 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const logger = require('winston');
 const { prefix, token } = require('./config.json');
+const ytdl = require('ytdl-core');
 var commandUsed = false
-const Sequelize = require('sequelize');
+//const Sequelize = require('sequelize');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -20,33 +21,37 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
-const sequelize = new Sequelize('databse', 'user', 'password', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  logging: false,
-  storage: 'databse.sqlite',
-});
-
-const Tags = sequelize.define('tags', {
-  name: {
-    type: Sequelize.STRING,
-    unique: true,
-  },
-  description: Sequelize.TEXT,
-  username: Sequelize.STRING,
-  usage_count: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-    allowNull: false,
-  },
-});
+// const sequelize = new Sequelize('databse', 'user', 'password', {
+//   host: 'localhost',
+//   dialect: 'sqlite',
+//   logging: false,
+//   storage: 'databse.sqlite',
+// });
+//
+// const Tags = sequelize.define('tags', {
+//   name: {
+//     type: Sequelize.STRING,
+//     unique: true,
+//   },
+//   description: Sequelize.TEXT,
+//   username: Sequelize.STRING,
+//   usage_count: {
+//     type: Sequelize.INTEGER,
+//     defaultValue: 0,
+//     allowNull: false,
+//   },
+// });
 //logs and sets activity when bot is ready
 client.on('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.user.username + ' - (' + client.user.id + ')');
     client.user.setActivity('Fromis_9', { type: 'LISTENING' });
-    Tags.sync();
+    logger.info('Servers: ');
+    client.guilds.forEach((guild) => {
+      logger.info('-' + guild.name + '-' + guild.id)
+    })
+    //Tags.sync();
 });
 
 //add role on join
@@ -56,7 +61,7 @@ client.on('guildMemberAdd', guildMember => {
 });
 
 //ping
-client.on('message', message => {
+client.on('message', async message => {
   if(commandUsed && message.author.bot){
     commandUsed = true;
     return;
