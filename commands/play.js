@@ -8,7 +8,7 @@ module.exports = {
 		const args = message.content.split(' ');
 		const queue = message.client.queue;
     const guild = message.guild;
-		const serverQueue = this.queue.get(message.guild.id);
+		const serverQueue = message.guild.id;
 
 		const voiceChannel = message.member.voiceChannel;
 		if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');

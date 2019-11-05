@@ -22,7 +22,7 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
-logger.info(client.commands);
+
 // const sequelize = new Sequelize('databse', 'user', 'password', {
 //   host: 'localhost',
 //   dialect: 'sqlite',
@@ -53,6 +53,7 @@ client.on('ready', () => {
     client.guilds.forEach((guild) => {
       logger.info('-' + guild.name + '-' + guild.id)
     })
+    logger.info(client.commands);
     //Tags.sync();
 });
 
