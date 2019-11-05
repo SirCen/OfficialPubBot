@@ -3,6 +3,7 @@ const fs = require('fs');
 const logger = require('winston');
 const { prefix, token } = require('./config.json');
 const ytdl = require('ytdl-core');
+
 var commandUsed = false
 //const Sequelize = require('sequelize');
 // Configure logger settings
@@ -15,12 +16,13 @@ logger.level = 'debug';
 // Initialize Discord Bot
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-
+const queue = new Map();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
+logger.info(client.commands);
 // const sequelize = new Sequelize('databse', 'user', 'password', {
 //   host: 'localhost',
 //   dialect: 'sqlite',
