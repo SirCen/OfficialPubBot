@@ -3,7 +3,8 @@ const fs = require('fs');
 const logger = require('winston');
 const { prefix, token } = require('./config.json');
 const ytdl = require('ytdl-core');
-
+const permission = ['ADMINISTRATOR'];
+const botPermissions = new Discord.Permissions(permission);
 var commandUsed = false
 //const Sequelize = require('sequelize');
 // Configure logger settings
@@ -59,8 +60,20 @@ client.on('ready', () => {
 
 //add role on join
 client.on('guildMemberAdd', guildMember => {
- var newRole = guildMember.guild.roles.find(role => role.name === 'Test');
- guildMember.addRole(newRole);
+  fs.readFile('role.txt', (err, customRole) => {
+      if (err) {
+         console.log(err);
+       }
+       if(guildMember.guild.me.hasPermission('ADMINISTRATOR')) {
+         const command = client.commands.get("autorole");
+         //var aRole = customRole.toString('utf8');
+         var aRole = 'test';
+         var newRole = guildMember.guild.roles.find(role => role.name === aRole);
+         guildMember.addRole(newRole);
+      }
+  });
+
+
 });
 
 //ping
