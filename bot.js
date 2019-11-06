@@ -27,6 +27,11 @@ client.on('ready', () => {
     logger.info('Logged in as: ');
     logger.info(client.user.username + ' - (' + client.user.id + ')');
     client.user.setActivity('Fromis_9', { type: 'LISTENING' });
+    logger.info('Servers: ');
+    client.guilds.forEach((guild) => {
+      logger.info('-' + guild.name + '-' + guild.id)
+    })
+    logger.info(client.commands);
 });
 
 //add role on join
