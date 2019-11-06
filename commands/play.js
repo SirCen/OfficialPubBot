@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { Util } = require('discord.js');
 const ytdl = require('ytdl-core');
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
 		const args = message.content.split(' ');
 		const queue = message.client.queue;
     const guild = message.guild;
-		const serverQueue = message.guild.id;
+		const serverQueue = message.client.queue.get(message.guild.id);
 
 		const voiceChannel = message.member.voiceChannel;
 		if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
@@ -40,14 +40,14 @@ module.exports = {
 			try {
 				var connection = await voiceChannel.join();
 				queueContruct.connection = connection;
-				this.play(message, queueContruct.songs[0]);
+				this.play(message.guild, queueContruct.songs[0]);
 			} catch (err) {
 				console.log(err);
 				queue.delete(message.guild.id);
 				return message.channel.send(err);
 			}
 		} else {
-			serverQueue.songs.add(song);
+			serverQueue.songs.push(song);
 			return message.channel.send(`${song.title} has been added to the queue!`);
 		}
 	},
