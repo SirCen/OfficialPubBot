@@ -57,21 +57,31 @@ client.on('ready', () => {
     logger.info(client.commands);
     //Tags.sync();
 });
-
+var jsonPath = './roles.json';
+var jsonRead = fs.readFileSync(jsonPath);
+var jsonFile = JSON.parse(jsonRead);
 //add role on join
 client.on('guildMemberAdd', guildMember => {
-  fs.readFile('role.txt', (err, customRole) => {
-      if (err) {
-         console.log(err);
-       }
-       if(guildMember.guild.me.hasPermission('ADMINISTRATOR')) {
-         const command = client.commands.get("autorole");
-         //var aRole = customRole.toString('utf8');
-         var aRole = 'test';
-         var newRole = guildMember.guild.roles.find(role => role.name === aRole);
-         guildMember.addRole(newRole);
-      }
-  });
+  var guildId = member.guild.id;
+    if (!jsonFile[guildId]) {
+        console.log('Role could not be found')
+    } else {
+        let autoRole = jsonFile[guildId]
+        let myRole = member.guild.roles.find(role => role.name === autoRole.role);
+        member.addRole(myRole)
+    }
+  // fs.readFile('role.txt', (err, customRole) => {
+  //     if (err) {
+  //        console.log(err);
+  //      }
+  //      if(guildMember.guild.me.hasPermission('ADMINISTRATOR')) {
+  //        const command = client.commands.get("autorole");
+  //        //var aRole = customRole.toString('utf8');
+  //        var aRole = 'test';
+  //        var newRole = guildMember.guild.roles.find(role => role.name === aRole);
+  //        guildMember.addRole(newRole);
+  //     }
+  //});
 
 
 });
