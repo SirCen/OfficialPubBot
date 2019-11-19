@@ -6,7 +6,7 @@ module.exports = {
   usage: '<role to be assigned automatically on join>',
   execute(message, args) {
     let customRole = message.content.slice(9).split(' ');
-    fs.writeFile(`role.txt`, customRole, (err) => {
+    fs.writeFile(`roles.json`, customRole, (err) => {
       if (err) {
         console.error(err);
       }
