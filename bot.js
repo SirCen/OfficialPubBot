@@ -2,11 +2,8 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const logger = require('winston');
 const { prefix, token } = require('./config.json');
-const ytdl = require('ytdl-core');
-const permission = ['ADMINISTRATOR'];
-const botPermissions = new Discord.Permissions(permission);
+const Sequelize = require('sequelize');
 var commandUsed = false
-//const Sequelize = require('sequelize');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -24,26 +21,27 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-// const sequelize = new Sequelize('databse', 'user', 'password', {
-//   host: 'localhost',
-//   dialect: 'sqlite',
-//   logging: false,
-//   storage: 'databse.sqlite',
-// });
-//
-// const Tags = sequelize.define('tags', {
-//   name: {
-//     type: Sequelize.STRING,
-//     unique: true,
-//   },
-//   description: Sequelize.TEXT,
-//   username: Sequelize.STRING,
-//   usage_count: {
-//     type: Sequelize.INTEGER,
-//     defaultValue: 0,
-//     allowNull: false,
-//   },
-// });
+//database
+//connect
+const sequelize = new Sequelize('database', 'user', 'password', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  storage: 'database.sqlite'
+});
+//create table with columns guildID and role
+const Tags = sequelize.define('tags', {
+  guildID: {
+    type: Sequelize.STRING,
+    unique: true
+  },
+  role: {
+    type: Sequelize.STRING,
+    get : function() {
+      var name = this.getDataValue('role');
+      return name;
+    }
+  }
+});
 //logs and sets activity when bot is ready
 client.on('ready', () => {
     logger.info('Connected');
@@ -55,38 +53,24 @@ client.on('ready', () => {
       logger.info('-' + guild.name + '-' + guild.id)
     })
     logger.info(client.commands);
-    //Tags.sync();
+    Tags.sync();
 });
-var jsonPath = './roles.json';
-var jsonRead = fs.readFileSync(jsonPath);
-var jsonFile = JSON.parse(jsonRead);
+
 //add role on join
-client.on('guildMemberAdd', guildMember => {
-  var guildId = member.guild.id;
-    if (!jsonFile[guildId]) {
-        console.log('Role could not be found')
-    } else {
-        let autoRole = jsonFile[guildId]
-        let myRole = member.guild.roles.find(role => role.name === autoRole.role);
-        member.addRole(myRole)
+client.on('guildMemberAdd', async guildMember => {
+  try {
+    let autoRole = await Tags.findAll({attributes:["role"], where: {guildID: guildMember.guild.id}});
+    if(autoRole) {
+      let tempRole = autoRole.map((autoRole) => autoRole.role);
+      let newRole = guildMember.guild.roles.find(role => role.name === tempRole[0] );
+      guildMember.addRole(newRole);
     }
-  // fs.readFile('role.txt', (err, customRole) => {
-  //     if (err) {
-  //        console.log(err);
-  //      }
-  //      if(guildMember.guild.me.hasPermission('ADMINISTRATOR')) {
-  //        const command = client.commands.get("autorole");
-  //        //var aRole = customRole.toString('utf8');
-  //        var aRole = 'test';
-  //        var newRole = guildMember.guild.roles.find(role => role.name === aRole);
-  //        guildMember.addRole(newRole);
-  //     }
-  //});
-
-
+  } catch (err) {
+    console.error(err.message);
+  }
 });
 
-//ping
+//commands
 client.on('message', async message => {
   if(commandUsed && message.author.bot){
     commandUsed = true;
@@ -97,25 +81,73 @@ client.on('message', async message => {
   }
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
-  if (!client.commands.has(commandName)) {
+  if (!client.commands.has(commandName) && commandName == 'autorole' && commandName == 'editautorole' && commandName == 'removeautorole') {
     return message.channel.send('That is not a valid command, please try again :))');
-  }
-  const command = client.commands.get(commandName);
-  if (command.args && !args.length) {
-    let reply = `You didn't provide any arguments, ${message.author}`;
-    if (command.usage) {
-      reply += `\nThe proper usage would be: \'${prefix}${command.name} ${command.usage}`;
+  }else {
+    const command = client.commands.get(commandName);
+    if (command.args && !args.length && commandName == 'autorole' && commandName == 'editautorole' && commandName == 'removeautorole') {
+      let reply = `You didn't provide any arguments, ${message.author}`;
+      if (command.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${command.name} ${command.usage}`;
+      }
+      return message.channel.send(reply);
     }
-    return message.channel.send(reply);
-  }
-  try {
-	   command.execute(message, args);
-   } catch (error) {
-	    console.error(error);
-	     message.reply('there was an error trying to execute that command!');
+    try {
+  	   command.execute(message, args);
+     } catch (error) {
+  	    console.error(error);
+  	     message.reply('there was an error trying to execute that command!');
+    }
   }
 });
+//autorole
+client.on('message', async message => {
+	if (message.content.startsWith(prefix)) {
+		const input = message.content.slice(prefix.length).split(/ +/);
+		const command = input.shift().toLowerCase();
+		const commandArgs = input.join(' ');
+    if (message.member.hasPermission("ADMINISTRATOR")) {
+  		if (command === 'autorole') {
+        const splitArgs = commandArgs.split(' ');
+        const tagName = splitArgs.shift();
 
+
+        try {
+        	// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
+        	const tag = await Tags.create({
+        		guildID: message.guild.id,
+        		role: tagName,
+        	});
+        	return message.reply(`Role ${tag.role} added.`);
+        }
+        catch (e) {
+        	if (e.name === 'SequelizeUniqueConstraintError') {
+        		return message.reply('Role already added, to edit use \"editautorole\"' );
+        	}
+        	return message.reply('Something went wrong with adding a role.');
+        }
+    	} else if (command === 'editautorole') {
+        const splitArgs = commandArgs.split(' ');
+        const tagName = splitArgs.shift();
+    // equivalent to: UPDATE tags (descrption) values (?) WHERE name='?';
+        const affectedRows = await Tags.update({ role: tagName }, { where: { guildID: message.guild.id } });
+        if (affectedRows > 0) {
+    	      return message.reply(`Autorole was changed`);
+        }
+           return message.reply(`Could not find a role with name ${tagName}.`);
+    	} else if (command === 'removeautorole') {
+        let remove = await Tags.destroy({where: { guildID : message.guild.id}});
+        if (!remove) {
+          return message.reply('No role assigned to server.');
+        } else {
+          return message.reply('AutoRole removed.');
+        }
+    	}
+    } else {
+      return message.reply('You do not have permission to use that command.');
+    }
+	}
+});
 //Im and Yurr response
 client.on('message', message => {
 let str = message.content;
