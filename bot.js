@@ -1,8 +1,9 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const logger = require('winston');
-const { prefix, token } = require('./config.json');
+const { prefix, adminPrefix, token } = require('./config.json');
 const Sequelize = require('sequelize');
+const permissions = new Discord.Permissions("MANAGE_GUILD");
 var commandUsed = false
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -81,11 +82,11 @@ client.on('message', async message => {
   }
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
-  if (!client.commands.has(commandName) && commandName == 'autorole' && commandName == 'editautorole' && commandName == 'removeautorole') {
+  if (!client.commands.has(commandName)) {
     return message.channel.send('That is not a valid command, please try again :))');
   }else {
     const command = client.commands.get(commandName);
-    if (command.args && !args.length && commandName == 'autorole' && commandName == 'editautorole' && commandName == 'removeautorole') {
+    if (command.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
       if (command.usage) {
         reply += `\nThe proper usage would be: \'${prefix}${command.name} ${command.usage}`;
@@ -102,16 +103,14 @@ client.on('message', async message => {
 });
 //autorole
 client.on('message', async message => {
-	if (message.content.startsWith(prefix)) {
-		const input = message.content.slice(prefix.length).split(/ +/);
+	if (message.content.startsWith(adminPrefix)) {
+		const input = message.content.slice(adminPrefix.length).split(/ +/);
 		const command = input.shift().toLowerCase();
 		const commandArgs = input.join(' ');
-    if (message.member.hasPermission("ADMINISTRATOR")) {
+    if (message.member.permissionsIn == permissions) {
   		if (command === 'autorole') {
         const splitArgs = commandArgs.split(' ');
         const tagName = splitArgs.shift();
-
-
         try {
         	// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
         	const tag = await Tags.create({
@@ -126,7 +125,7 @@ client.on('message', async message => {
         	}
         	return message.reply('Something went wrong with adding a role.');
         }
-    	} else if (command === 'editautorole') {
+    } else if (command === 'editautorole') {
         const splitArgs = commandArgs.split(' ');
         const tagName = splitArgs.shift();
     // equivalent to: UPDATE tags (descrption) values (?) WHERE name='?';
@@ -146,7 +145,7 @@ client.on('message', async message => {
     } else {
       return message.reply('You do not have permission to use that command.');
     }
-	}
+  }
 });
 //Im and Yurr response
 client.on('message', message => {
