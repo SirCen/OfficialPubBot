@@ -107,7 +107,7 @@ client.on('message', async message => {
 		const input = message.content.slice(adminPrefix.length).split(/ +/);
 		const command = input.shift().toLowerCase();
 		const commandArgs = input.join(' ');
-    if (message.member.permissionsIn == permissions) {
+    if (message.member.hasPermission(permissions)) {
   		if (command === 'autorole') {
         const splitArgs = commandArgs.split(' ');
         const tagName = splitArgs.shift();
