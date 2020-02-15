@@ -143,7 +143,7 @@ client.on('message', async message => {
         }
     	}
     } else {
-      return message.reply('You do not have permission to use that command.');
+      return;
     }
   }
 });
