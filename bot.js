@@ -198,4 +198,4 @@ let n = str.search("!hot");
     }
   }
 });
-client.login(process.env.BOT_TOKEN);
+client.login(token);
