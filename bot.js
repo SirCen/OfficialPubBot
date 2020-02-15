@@ -3,6 +3,7 @@ const fs = require('fs');
 const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
 const Sequelize = require('sequelize');
+const alphabet = require('emoji-alphabet').alphabet;
 const permissions = new Discord.Permissions("MANAGE_GUILD");
 var commandUsed = false
 // Configure logger settings
@@ -182,9 +183,9 @@ let n = str.search("!hot");
         }
         if (stringArray[i] === "innit") {
           try{
-            const innit = message.guild.emojis.find(innit => innit.name === 'innit'); 
+            const innit = message.guild.emojis.find(innit => innit.name === 'innit');
             if(innit === null) {
-              message.react('678315681518845965');
+              message.react("🇮").then(() => message.react("🇳")).then(() => message.react(alphabet['N'])).then(() => message.react("ℹ️")).then(() => message.react("🇹"));
               return;
             }else {
               return message.react(innit);
