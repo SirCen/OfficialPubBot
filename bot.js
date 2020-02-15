@@ -104,13 +104,12 @@ client.on('message', async message => {
 //autorole
 client.on('message', async message => {
 	if (message.content.startsWith(adminPrefix)) {
-		const input = message.content.slice(adminPrefix.length).split(/ +/);
-		const command = input.shift().toLowerCase();
-		const commandArgs = input.join(' ');
+    const input = message.content.slice(adminPrefix.length).split(/ +/);
+    const command = input.shift().toLowerCase();
+    const commandArgs = input.join(' ');
     if (message.member.hasPermission(permissions)) {
-  		if (command === 'autorole') {
-        const splitArgs = commandArgs.split(' ');
-        const tagName = splitArgs.shift();
+  		if (command === 'ar') {
+        const tagName = commandArgs;
         try {
         	// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
         	const tag = await Tags.create({
@@ -121,20 +120,19 @@ client.on('message', async message => {
         }
         catch (e) {
         	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('Role already added, to edit use \"editautorole\"' );
+        		return message.reply('Role already added, to edit use \"editar\"' );
         	}
         	return message.reply('Something went wrong with adding a role.');
         }
-    } else if (command === 'editautorole') {
-        const splitArgs = commandArgs.split(' ');
-        const tagName = splitArgs.shift();
+    } else if (command === 'editar') {
+        const tagName = commandArgs;
     // equivalent to: UPDATE tags (descrption) values (?) WHERE name='?';
         const affectedRows = await Tags.update({ role: tagName }, { where: { guildID: message.guild.id } });
         if (affectedRows > 0) {
     	      return message.reply(`Autorole was changed`);
         }
            return message.reply(`Could not find a role with name ${tagName}.`);
-    	} else if (command === 'removeautorole') {
+    	} else if (command === 'removear') {
         let remove = await Tags.destroy({where: { guildID : message.guild.id}});
         if (!remove) {
           return message.reply('No role assigned to server.');
@@ -158,13 +156,13 @@ let n = str.search("!hot");
       return;
     }else {
       commandUsed = true;
-      var stringArray = message.content.split(' ');
+      var stringArray = message.content.toLowerCase().split(' ');
       var found;
       var foundAt;
       var newMessage = " ";
       var length = stringArray.length;
       for(let i = 0; i < length; i++) {
-        if (stringArray[i] === "I'm" | stringArray[i] === "Im" | stringArray[i] === "im") {
+        if (stringArray[i] === "i'm" | stringArray[i] === "im") {
           foundAt = i;
           found = true;
           for (let i = foundAt; length > i+1; i++) {
@@ -175,11 +173,24 @@ let n = str.search("!hot");
             return message.channel.send("Hi" + newMessage + ", I'm Pub Bot");
           }
         } else if (!found) {
-          if (stringArray[i] === "yurr" | stringArray[i] === "Yurr") {
+          if (stringArray[i] === "yurr") {
             if (!stringArray[i] == '!hot') {
               return;
             }
             return message.channel.send('I agree with the above statement');
+          }
+        }
+        if (stringArray[i] === "innit") {
+          try{
+            const innit = message.guild.emojis.find(innit => innit.name === 'innit'); 
+            if(innit === null) {
+              message.react('678315681518845965');
+              return;
+            }else {
+              return message.react(innit);
+            }
+          } catch(DiscordAPIError) {
+            return;
           }
         }
       }
