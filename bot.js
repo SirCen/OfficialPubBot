@@ -147,52 +147,53 @@ client.on('message', async message => {
   }
 });
 //Im and Yurr response
-client.on('message', message => {
-let str = message.content;
-let n = str.search("!hot");
-  if (n > -1) {
-    return commandUsed = true;
-  } else {
-    if (commandUsed & message.author.bot) {
-      return;
-    }else {
-      commandUsed = true;
-      var stringArray = message.content.toLowerCase().split(' ');
-      var found;
-      var foundAt;
-      var newMessage = " ";
-      var length = stringArray.length;
-      for(let i = 0; i < length; i++) {
-        // if (stringArray[i] === "i'm" | stringArray[i] === "im") {
-        //   foundAt = i;
-        //   found = true;
-        //   for (let i = foundAt; length > i+1; i++) {
-        //     newMessage = newMessage + stringArray[i+1] + " ";
-        //   }
-        //   newMessage = " " + newMessage.trim();
-        //   if (found && newMessage !== " Pub Bot") {
-        //     return message.channel.send("Hi" + newMessage + ", I'm Pub Bot");
-        //   }
-        // } else if (!found) {
-          if (stringArray[i] === "yurr") {
-            if (!stringArray[i] == '!hot') {
-              return;
-            }
-            return message.channel.send('I agree with the above statement');
-          }
-        //}
-      }
-    }
-  }
-});
+// client.on('message', message => {
+// let str = message.content;
+// let n = str.search("!hot");
+//   if (n > -1) {
+//     return commandUsed = true;
+//   } else {
+//     if (commandUsed & message.author.bot) {
+//       return;
+//     }else {
+//       commandUsed = true;
+//       var stringArray = message.content.toLowerCase().split(' ');
+//       var found;
+//       var foundAt;
+//       var newMessage = " ";
+//       var length = stringArray.length;
+//       for(let i = 0; i < length; i++) {
+//         if (stringArray[i] === "i'm" | stringArray[i] === "im") {
+//           foundAt = i;
+//           found = true;
+//           for (let i = foundAt; length > i+1; i++) {
+//             newMessage = newMessage + stringArray[i+1] + " ";
+//           }
+//           newMessage = " " + newMessage.trim();
+//           if (found && newMessage !== " Pub Bot") {
+//             return message.channel.send("Hi" + newMessage + ", I'm Pub Bot");
+//           }
+//         } else if (!found) {
+//           if (stringArray[i] === "yurr") {
+//             if (!stringArray[i] == '!hot') {
+//               return;
+//             }
+//             return message.channel.send('I agree with the above statement');
+//           }
+//         }
+//       }
+//     }
+//   }
+// });
 
+//Im response
 client.on('message', message => {
   var input = message.content.toLowerCase();
   var output = "";
-  if (commandUsed & message.author.bot) {
+  if (commandUsed && message.author.bot) {
     return;
   } else {
-    commandUsed = !commandUsed;
+    commandUsed = true;
     if (input.includes('im')) {
       var index = input.indexOf('im');
       output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
@@ -204,6 +205,20 @@ client.on('message', message => {
     }
   }
 });
+
+//Yurr Response
+client.on('message', message => {
+  var input = message.content.toLowerCase();
+  const output = "I agree with the above statement";
+  if (commandUsed && message.author.bot) {
+    return;
+  } else {
+    commandUsed = true;
+    if (input.includes('yurr') | input.includes('y u r r')) {
+      return message.channel.send(output);
+    }
+  }
+})
 
 //React to innit
 client.on('message', message => {
