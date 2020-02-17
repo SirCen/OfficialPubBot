@@ -153,7 +153,7 @@ let n = str.search("!hot");
   if (n > -1) {
     return commandUsed = true;
   } else {
-    if (commandUsed && message.author.bot) {
+    if (commandUsed & message.author.bot) {
       return;
     }else {
       commandUsed = true;
@@ -163,39 +163,66 @@ let n = str.search("!hot");
       var newMessage = " ";
       var length = stringArray.length;
       for(let i = 0; i < length; i++) {
-        if (stringArray[i] === "i'm" | stringArray[i] === "im") {
-          foundAt = i;
-          found = true;
-          for (let i = foundAt; length > i+1; i++) {
-            newMessage = newMessage + stringArray[i+1] + " ";
-          }
-          newMessage = " " + newMessage.trim();
-          if (found && newMessage !== " Pub Bot") {
-            return message.channel.send("Hi" + newMessage + ", I'm Pub Bot");
-          }
-        } else if (!found) {
+        // if (stringArray[i] === "i'm" | stringArray[i] === "im") {
+        //   foundAt = i;
+        //   found = true;
+        //   for (let i = foundAt; length > i+1; i++) {
+        //     newMessage = newMessage + stringArray[i+1] + " ";
+        //   }
+        //   newMessage = " " + newMessage.trim();
+        //   if (found && newMessage !== " Pub Bot") {
+        //     return message.channel.send("Hi" + newMessage + ", I'm Pub Bot");
+        //   }
+        // } else if (!found) {
           if (stringArray[i] === "yurr") {
             if (!stringArray[i] == '!hot') {
               return;
             }
             return message.channel.send('I agree with the above statement');
           }
-        }
-        if (stringArray[i] === "innit") {
-          try{
-            const innit = message.guild.emojis.find(innit => innit.name === 'innit');
-            if(innit === null) {
-              message.react("🇮").then(() => message.react("🇳")).then(() => message.react(alphabet['N'])).then(() => message.react("ℹ️")).then(() => message.react("🇹"));
-              return;
-            }else {
-              return message.react(innit);
-            }
-          } catch(DiscordAPIError) {
-            return;
-          }
-        }
+        //}
       }
     }
   }
 });
+
+client.on('message', message => {
+  var input = message.content.toLowerCase();
+  var output = "";
+  if (commandUsed & message.author.bot) {
+    return;
+  } else {
+    commandUsed = !commandUsed;
+    if (input.includes('im')) {
+      var index = input.indexOf('im');
+      output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
+      return message.channel.send(output);
+    } else if (input.includes("i'm")) {
+      var index = input.indexOf("i'm");
+      output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
+      return message.channel.send(output);
+    }
+  }
+});
+
+//React to innit
+client.on('message', message => {
+  var input = message.content.toLowerCase();
+  try { 
+    const innit = message.guild.emojis.find(innit => innit.name === "innit");
+    if (!message.author.bot) {
+      if (input.includes('innit') | input.includes('i n n i t')){
+        if (innit == null) {
+          message.react("🇮").then(() => message.react("🇳")).then(() => message.react(alphabet['N'])).then(() => message.react("ℹ️")).then(() => message.react("🇹"));
+          return;
+        } else {
+          return message.react(innit);
+        }
+      }
+    }
+  } catch(DiscordAPIError) {
+    return;
+  }
+});
+
 client.login(token);
