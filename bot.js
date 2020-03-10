@@ -5,7 +5,7 @@ const { prefix, adminPrefix, token } = require('./config.json');
 const Sequelize = require('sequelize');
 const alphabet = require('emoji-alphabet').alphabet;
 const permissions = new Discord.Permissions("MANAGE_GUILD");
-var commandUsed = false
+let commandUsed = false;
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -189,19 +189,25 @@ client.on('message', async message => {
 //Im response
 client.on('message', message => {
   var input = message.content.toLowerCase();
-  var output = "";
-  if (commandUsed && message.author.bot) {
-    return;
-  } else {
-    commandUsed = true;
-    if (input.includes('im')) {
-      var index = input.indexOf('im');
-      output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
-      return message.channel.send(output);
-    } else if (input.includes("i'm")) {
-      var index = input.indexOf("i'm");
-      output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
-      return message.channel.send(output);
+  let str = message.content;
+  let n = str.search(prefix + "hot");
+  if (n > -1) {
+    return commandUsed = true;
+  }else {
+    var output = "";
+    if (commandUsed && message.author.bot) {
+      return;
+    } else {
+      commandUsed = true;
+      if (input.includes('im')) {
+        var index = input.indexOf('im');
+        output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
+        return message.channel.send(output);
+      } else if (input.includes("i'm")) {
+        var index = input.indexOf("i'm");
+        output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
+        return message.channel.send(output);
+      }
     }
   }
 });
@@ -210,12 +216,25 @@ client.on('message', message => {
 client.on('message', message => {
   var input = message.content.toLowerCase();
   const output = "I agree with the above statement";
-  if (commandUsed && message.author.bot) {
-    return;
-  } else {
-    commandUsed = true;
-    if (input.includes('yurr') | input.includes('y u r r')) {
-      return message.channel.send(output);
+  let str = message.content;
+  let n = str.search(prefix + "hot");
+  let found;
+  if (n > -1) {
+    return commandUsed = true;
+  }else {
+    if (commandUsed && message.author.bot) {
+      return;
+    } else {
+      commandUsed = true;
+      if (input.includes('yurr') | input.includes('y u r r')) {
+        var index = input.indexOf('yurr');
+        var substring = input.substring(0, index);
+        if ( substring.search('im') || substring.search("i'm")) { 
+          return found = true;
+        }else if(!found) {          
+          return message.channel.send(output);
+        }
+      }
     }
   }
 })
