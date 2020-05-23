@@ -30,6 +30,7 @@ const sequelize = new Sequelize('database', 'user', 'password', {
   dialect: 'sqlite',
   storage: 'database.sqlite'
 });
+
 //create table with columns guildID and role
 const Tags = sequelize.define('tags', {
   guildID: {
@@ -44,6 +45,22 @@ const Tags = sequelize.define('tags', {
     }
   }
 });
+
+// create table with columns of GuildId, channelID, and bool disabled
+const ComDisabled = sequelize.define('comDisable', {
+  guildID : {
+    type: Sequelize.STRING
+  },
+  channelID : {
+    type: Sequelize.STRING,
+    unique: true
+  },
+  imDisabled : {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  }
+});
+
 //logs and sets activity when bot is ready
 client.on('ready', () => {
     logger.info('Connected');
@@ -56,6 +73,7 @@ client.on('ready', () => {
     })
     logger.info(client.commands);
     Tags.sync();
+    ComDisabled.sync();
 });
 
 //add role on join
@@ -102,6 +120,7 @@ client.on('message', async message => {
     }
   }
 });
+
 //autorole
 client.on('message', async message => {
 	if (message.content.startsWith(adminPrefix)) {
@@ -147,27 +166,56 @@ client.on('message', async message => {
   }
 });
 
+client.on('message', async message => {
+  if (message.content.startsWith(adminPrefix)) {
+    const command = message.content.slice(adminPrefix.length).split(/ +/);
+    if (command === 'disableIm') {
+      try {
+        const add = await ComDisabled.create({
+          guildID: message.guild.id,
+          channelID: message.guild.channels.id,
+          imDisabled: 1 
+        });
+        return message.reply("\'im\' response disabled for this channel, renable with \"enableIm\"");
+      } catch (e) {
+        if (e.name === 'SequelizeUniqueConstraintError') {
+          return message.reply('\"Im\" already disabled, renable with \"enableIm\"' );
+        }
+        return message.reply('Something went wrong with disabling Im response.');
+      }
+    } else if (command === 'enableIm') {
+      const update = await ComDisabled.update({ imDisabled: 0 }, { where: { guildID: message.guild.id, channelID: message.guild.channels.id } });
+      if (update > 0) {
+        return message.reply(`Im response was renabled`);
+    }
+       return message.reply(`Need to disable to enable.`);
+    }
+  }
+});
+
 //Im response
 client.on('message', message => {
-  var input = message.content.toLowerCase();
-  let str = message.content;
-  let n = str.search(prefix + "hot");
-  if (n > -1) {
-    return commandUsed = true;
-  }else {
-    var output = "";
-    if (commandUsed && message.author.bot) {
-      return;
-    } else {
-      commandUsed = true;
-      if (input.includes('im')) {
-        var index = input.indexOf('im');
-        output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
-        return message.channel.send(output);
-      } else if (input.includes("i'm")) {
-        var index = input.indexOf("i'm");
-        output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
-        return message.channel.send(output);
+  if (!message.content.startsWith(adminPrefix)) {
+    var input = message.content.toLowerCase();
+    let str = message.content;
+    let n = str.search(prefix + "hot");
+    if (n > -1) {
+      return commandUsed = true;
+    }else {
+      var output = "";
+      if (commandUsed && message.author.bot) {
+        return;
+      } else {
+        commandUsed = true;
+        if (input.includes('im')) {
+          var index = input.indexOf('im');
+          output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
+          return message.channel.send(output);
+        } else if (input.includes("i'm")) {
+          var index = input.indexOf("i'm");
+          output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
+          return message.channel.send(output);
+        }
       }
     }
   }
