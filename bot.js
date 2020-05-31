@@ -3,6 +3,7 @@ const fs = require('fs');
 const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
 const Sequelize = require('sequelize');
+const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
 const permissions = new Discord.Permissions("MANAGE_GUILD");
 let commandUsed = false;
@@ -12,7 +13,7 @@ logger.add(new logger.transports.Console, {
     colorize: true
 });
 logger.level = 'debug';
-
+const tools =  new Tools();
 // Initialize Discord Bot
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -25,41 +26,41 @@ for (const file of commandFiles) {
 
 //database
 //connect
-const sequelize = new Sequelize('database', 'user', 'password', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  storage: 'database.sqlite'
-});
+// const sequelize = new Sequelize('database', 'user', 'password', {
+//   host: 'localhost',
+//   dialect: 'sqlite',
+//   storage: './sql/database.sqlite'
+// });
 
 //create table with columns guildID and role
-const Tags = sequelize.define('tags', {
-  guildID: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  role: {
-    type: Sequelize.STRING,
-    get : function() {
-      var name = this.getDataValue('role');
-      return name;
-    }
-  }
-});
+// const Tags = sequelize.define('tags', {
+//   guildID: {
+//     type: Sequelize.STRING,
+//     unique: true
+//   },
+//   role: {
+//     type: Sequelize.STRING,
+//     get : function() {
+//       var name = this.getDataValue('role');
+//       return name;
+//     }
+//   }
+// });
 
 // create table with columns of GuildId, channelID, and bool disabled
-const ComDisabled = sequelize.define('comDisable', {
-  guildID : {
-    type: Sequelize.STRING
-  },
-  channelID : {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  imDisabled : {
-    type: Sequelize.INTEGER,
-    defaultValue: 0
-  }
-});
+// const ComDisabled = sequelize.define('comDisable', {
+//   guildID : {
+//     type: Sequelize.STRING
+//   },
+//   channelID : {
+//     type: Sequelize.STRING,
+//     unique: true
+//   },
+//   imDisabled : {
+//     type: Sequelize.INTEGER,
+//     defaultValue: 0
+//   }
+// });
 
 //logs and sets activity when bot is ready
 client.on('ready', () => {
@@ -72,8 +73,8 @@ client.on('ready', () => {
       logger.info('-' + guild.name + '-' + guild.id)
     })
     logger.info(client.commands);
-    Tags.sync();
-    ComDisabled.sync();
+    // Tags.sync();
+    // ComDisabled.sync();
 });
 
 //add role on join
@@ -130,34 +131,42 @@ client.on('message', async message => {
     if (message.member.hasPermission(permissions)) {
   		if (command === 'ar') {
         const tagName = commandArgs;
-        try {
-        	// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
-        	const tag = await Tags.create({
-        		guildID: message.guild.id,
-        		role: tagName,
-        	});
-        	return message.reply(`Role ${tag.role} added.`);
-        }
-        catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('Role already added, to edit use \"editar\"' );
-        	}
-        	return message.reply('Something went wrong with adding a role.');
-        }
-    } else if (command === 'editar') {
+        tools.addRole(tagName, message);
+        // try {
+        // 	// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
+        // 	const tag = await tools.Tags.create({
+        // 		guildID: message.guild.id,
+        // 		role: tagName,
+        // 	});
+        // 	return message.reply(`Role ${tag.role} added.`);
+        // }
+        // catch (e) {
+        // 	if (e.name === 'SequelizeUniqueConstraintError') {
+        // 		return message.reply('Role already added, to edit use \"editar\"' );
+        // 	}
+        // 	return message.reply('Something went wrong with adding a role.');
+      
+      } else if (command === 'editar') {
         const tagName = commandArgs;
     // equivalent to: UPDATE tags (descrption) values (?) WHERE name='?';
-        const affectedRows = await Tags.update({ role: tagName }, { where: { guildID: message.guild.id } });
+        const affectedRows = await tools.Tags.update({ role: tagName }, { where: { guildID: message.guild.id } });
         if (affectedRows > 0) {
     	      return message.reply(`Autorole was changed`);
         }
            return message.reply(`Could not find a role with name ${tagName}.`);
     	} else if (command === 'removear') {
-        let remove = await Tags.destroy({where: { guildID : message.guild.id}});
-        if (!remove) {
-          return message.reply('No role assigned to server.');
-        } else {
-          return message.reply('AutoRole removed.');
+        try {
+          let remove = await tools.Tags.destroy({where: { guildID : message.guild.id}});
+          if (!remove) {
+            return message.reply('No role assigned to server.');
+          } else {
+            return message.reply('AutoRole removed.');
+          }
+        } catch (e) {
+          if (e.name === 'SequelizeUniqueConstraintError') {
+            return;
+          } 
+          return message.reply("Something went wrong");
         }
     	}
     } else {
