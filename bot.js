@@ -83,28 +83,28 @@ client.on('message', async message => {
 });
 
 //autorole
-client.on('message', async message => {
-	if (message.content.startsWith(adminPrefix)) {
-    const input = message.content.slice(adminPrefix.length).split(/ +/);
-    const command = input.shift().toLowerCase();
-    const commandArgs = input.join(' ');
-    if (message.member.hasPermission(permissions)) {
-  		if (command === 'addrole') {
-        const tagName = commandArgs;
-        tools.addRole(tagName, message);
-      } else if (command === 'editrole') {
-        const tagName = commandArgs;
-        tools.editRole(tagName, message);
-    	} else if (command === 'removerole') {
-        tools.removeRole(message);
-    	} else if (command === 'currentrole') {
-        tools.currentRole(message);
-      }
-    } else {
-      return;
-    }
-  }
-});
+// client.on('message', async message => {
+// 	if (message.content.startsWith(adminPrefix)) {
+//     const input = message.content.slice(adminPrefix.length).split(/ +/);
+//     const command = input.shift().toLowerCase();
+//     const commandArgs = input.join(' ');
+//     if (message.member.hasPermission(permissions)) {
+//   		if (command === 'addrole') {
+//         const tagName = commandArgs;
+//         tools.addRole(tagName, message);
+//       } else if (command === 'editrole') {
+//         const tagName = commandArgs;
+//         tools.editRole(tagName, message);
+//     	} else if (command === 'removerole') {
+//         tools.removeRole(message);
+//     	} else if (command === 'currentrole') {
+//         tools.currentRole(message);
+//       }
+//     } else {
+//       return;
+//     }
+//   }
+// });
 
 client.on('message', async message => {
   if (message.content.startsWith(adminPrefix)) {
@@ -135,11 +135,11 @@ client.on('message', async message => {
 
 //Im response
 client.on('message', message => {
-  if (!message.content.startsWith(adminPrefix)) {
+  if (!message.content.startsWith(adminPrefix) || !message.content.startsWith(prefix)) {
     var input = message.content.toLowerCase();
     let str = message.content;
-    let n = str.search(prefix + "hot");
-    if (n > -1) {
+    let n = str.includes(prefix + "hot");
+    if (n) {
       return commandUsed = true;
     }else {
       var output = "";
@@ -166,9 +166,9 @@ client.on('message', message => {
   var input = message.content.toLowerCase();
   const output = "I agree with the above statement";
   let str = message.content;
-  let n = str.search(prefix + "hot");
-  let found;
-  if (n > -1) {
+  let n = str.includes(prefix + "hot");
+  let found = false;
+  if (n) {
     return commandUsed = true;
   }else {
     if (commandUsed && message.author.bot) {
@@ -178,8 +178,8 @@ client.on('message', message => {
       if (input.includes('yurr') | input.includes('y u r r')) {
         var index = input.indexOf('yurr');
         var substring = input.substring(0, index);
-        if ( substring.search('im') || substring.search("i'm")) { 
-          return found = true;
+        if ( input.includes('im') || input.includes("i'm")) { 
+          found = true;
         }else if(!found) {          
           return message.channel.send(output);
         }
