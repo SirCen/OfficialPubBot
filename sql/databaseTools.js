@@ -57,4 +57,13 @@ module.exports = class Tools {
             return message.reply('Something went wrong with adding a role.');
         }
     }
+
+    async editRole(tagName, message) {
+        try {
+            const tag = await tools.Tags.update({ role: tagName }, { where: { guildID: message.guild.id } });
+            return message.reply(`Role changed to ${tag.role}`);
+        }catch (e) {
+            return message.reply('Something went wrong');
+        }
+    }
 };
