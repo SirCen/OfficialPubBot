@@ -7,7 +7,7 @@ module.exports = {
     name: 'addrole',
     description: 'Adds a role to be automattically added to users when they join',
     args: true,
-    usuage: '<role name to be added on user join>',
+    usage: '<role name to be added on user join>',
     execute(message, args) {
         const tagName = args.join(' ');
       if (message.member.hasPermission(permissions)) {

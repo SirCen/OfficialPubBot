@@ -7,7 +7,7 @@ module.exports = {
     name: 'editrole',
     description: 'Changes the current autorole to new role',
     args: true,
-    usuage: '<role to be assigned as autorole>',
+    usage: '<role to be assigned as autorole>',
     execute(message, args) {
         const tagName = args.join(' ');
         if (message.member.hasPermission(permissions)) {
