@@ -92,9 +92,7 @@ client.on('message', async message => {
   		if (command === 'editrole') {
         const tagName = commandArgs;
         tools.editRole(tagName, message);
-    	} else if (command === 'currentrole') {
-        tools.currentRole(message);
-      }
+    	}
     } else {
       return;
     }
