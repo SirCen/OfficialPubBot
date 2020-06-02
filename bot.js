@@ -47,7 +47,7 @@ client.on('guildMemberAdd', async guildMember => {
       guildMember.addRole(newRole);
     } return;
   } catch (err) {
-    console.error(err.message);
+    return;
   }
 });
 
@@ -92,8 +92,6 @@ client.on('message', async message => {
   		if (command === 'editrole') {
         const tagName = commandArgs;
         tools.editRole(tagName, message);
-    	} else if (command === 'removerole') {
-        tools.removeRole(message);
     	} else if (command === 'currentrole') {
         tools.currentRole(message);
       }
