@@ -9,10 +9,9 @@ module.exports = {
     args: true,
     usuage: '<role name to be added on user join>',
     execute(message, args) {
-        console.log(args);
-        const tagName = args[0].toString();
+        const tagName = args.join(' ');
       if (message.member.hasPermission(permissions)) {
-        tools.addRole(tagName, message);
-      }
+        return tools.addRole(tagName, message);
+      } return message.channel.send('You do not have permission for this command.');
     }
   };

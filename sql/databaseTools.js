@@ -86,8 +86,8 @@ module.exports = class Tools {
         try {
             const tag = await this.Tags.destroy({where: { guildID : message.guild.id}});
             if (!tag) {
-                return message.reply('No role assigned to server.');
-            }return message.reply('AutoRole removed.');
+                return message.channel.send('No role assigned to server.');
+            }return message.channel.send('AutoRole removed.');
         } catch (e) {
             if(e.name === 'SequelizeUniqueConstraintError') {
                 return;

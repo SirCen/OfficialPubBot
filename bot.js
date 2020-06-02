@@ -40,7 +40,7 @@ client.on('ready', () => {
 //add role on join
 client.on('guildMemberAdd', async guildMember => {
   try {
-    let autoRole = await Tags.findAll({attributes:["role"], where: {guildID: guildMember.guild.id}});
+    let autoRole = await tools.Tags.findAll({attributes:["role"], where: {guildID: guildMember.guild.id}});
     if(autoRole) {
       let tempRole = autoRole.map((autoRole) => autoRole.role);
       let newRole = guildMember.guild.roles.find(role => role.name === tempRole[0] );
@@ -83,28 +83,25 @@ client.on('message', async message => {
 });
 
 //autorole
-// client.on('message', async message => {
-// 	if (message.content.startsWith(adminPrefix)) {
-//     const input = message.content.slice(adminPrefix.length).split(/ +/);
-//     const command = input.shift().toLowerCase();
-//     const commandArgs = input.join(' ');
-//     if (message.member.hasPermission(permissions)) {
-//   		if (command === 'addrole') {
-//         const tagName = commandArgs;
-//         tools.addRole(tagName, message);
-//       } else if (command === 'editrole') {
-//         const tagName = commandArgs;
-//         tools.editRole(tagName, message);
-//     	} else if (command === 'removerole') {
-//         tools.removeRole(message);
-//     	} else if (command === 'currentrole') {
-//         tools.currentRole(message);
-//       }
-//     } else {
-//       return;
-//     }
-//   }
-// });
+client.on('message', async message => {
+	if (message.content.startsWith(adminPrefix)) {
+    const input = message.content.slice(adminPrefix.length).split(/ +/);
+    const command = input.shift().toLowerCase();
+    const commandArgs = input.join(' ');
+    if (message.member.hasPermission(permissions)) {
+  		if (command === 'editrole') {
+        const tagName = commandArgs;
+        tools.editRole(tagName, message);
+    	} else if (command === 'removerole') {
+        tools.removeRole(message);
+    	} else if (command === 'currentrole') {
+        tools.currentRole(message);
+      }
+    } else {
+      return;
+    }
+  }
+});
 
 client.on('message', async message => {
   if (message.content.startsWith(adminPrefix)) {
