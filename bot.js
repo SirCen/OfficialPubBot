@@ -82,23 +82,6 @@ client.on('message', async message => {
   }
 });
 
-//autorole
-client.on('message', async message => {
-	if (message.content.startsWith(adminPrefix)) {
-    const input = message.content.slice(adminPrefix.length).split(/ +/);
-    const command = input.shift().toLowerCase();
-    const commandArgs = input.join(' ');
-    if (message.member.hasPermission(permissions)) {
-  		if (command === 'editrole') {
-        const tagName = commandArgs;
-        tools.editRole(tagName, message);
-    	}
-    } else {
-      return;
-    }
-  }
-});
-
 client.on('message', async message => {
   if (message.content.startsWith(adminPrefix)) {
     const command = message.content.slice(adminPrefix.length).split(/ +/);
