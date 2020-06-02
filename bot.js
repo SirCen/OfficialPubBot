@@ -2,9 +2,8 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
-const Sequelize = require('sequelize');
+const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
-const permissions = new Discord.Permissions("MANAGE_GUILD");
 let commandUsed = false;
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -12,54 +11,15 @@ logger.add(new logger.transports.Console, {
     colorize: true
 });
 logger.level = 'debug';
-
+const tools =  new Tools();
 // Initialize Discord Bot
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-const queue = new Map();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
-
-//database
-//connect
-const sequelize = new Sequelize('database', 'user', 'password', {
-  host: 'localhost',
-  dialect: 'sqlite',
-  storage: 'database.sqlite'
-});
-
-//create table with columns guildID and role
-const Tags = sequelize.define('tags', {
-  guildID: {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  role: {
-    type: Sequelize.STRING,
-    get : function() {
-      var name = this.getDataValue('role');
-      return name;
-    }
-  }
-});
-
-// create table with columns of GuildId, channelID, and bool disabled
-const ComDisabled = sequelize.define('comDisable', {
-  guildID : {
-    type: Sequelize.STRING
-  },
-  channelID : {
-    type: Sequelize.STRING,
-    unique: true
-  },
-  imDisabled : {
-    type: Sequelize.INTEGER,
-    defaultValue: 0
-  }
-});
 
 //logs and sets activity when bot is ready
 client.on('ready', () => {
@@ -72,21 +32,19 @@ client.on('ready', () => {
       logger.info('-' + guild.name + '-' + guild.id)
     })
     logger.info(client.commands);
-    Tags.sync();
-    ComDisabled.sync();
 });
 
 //add role on join
 client.on('guildMemberAdd', async guildMember => {
   try {
-    let autoRole = await Tags.findAll({attributes:["role"], where: {guildID: guildMember.guild.id}});
+    let autoRole = await tools.Tags.findAll({attributes:["role"], where: {guildID: guildMember.guild.id}});
     if(autoRole) {
       let tempRole = autoRole.map((autoRole) => autoRole.role);
       let newRole = guildMember.guild.roles.find(role => role.name === tempRole[0] );
       guildMember.addRole(newRole);
-    }
+    } return;
   } catch (err) {
-    console.error(err.message);
+    return;
   }
 });
 
@@ -121,51 +79,6 @@ client.on('message', async message => {
   }
 });
 
-//autorole
-client.on('message', async message => {
-	if (message.content.startsWith(adminPrefix)) {
-    const input = message.content.slice(adminPrefix.length).split(/ +/);
-    const command = input.shift().toLowerCase();
-    const commandArgs = input.join(' ');
-    if (message.member.hasPermission(permissions)) {
-  		if (command === 'ar') {
-        const tagName = commandArgs;
-        try {
-        	// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
-        	const tag = await Tags.create({
-        		guildID: message.guild.id,
-        		role: tagName,
-        	});
-        	return message.reply(`Role ${tag.role} added.`);
-        }
-        catch (e) {
-        	if (e.name === 'SequelizeUniqueConstraintError') {
-        		return message.reply('Role already added, to edit use \"editar\"' );
-        	}
-        	return message.reply('Something went wrong with adding a role.');
-        }
-    } else if (command === 'editar') {
-        const tagName = commandArgs;
-    // equivalent to: UPDATE tags (descrption) values (?) WHERE name='?';
-        const affectedRows = await Tags.update({ role: tagName }, { where: { guildID: message.guild.id } });
-        if (affectedRows > 0) {
-    	      return message.reply(`Autorole was changed`);
-        }
-           return message.reply(`Could not find a role with name ${tagName}.`);
-    	} else if (command === 'removear') {
-        let remove = await Tags.destroy({where: { guildID : message.guild.id}});
-        if (!remove) {
-          return message.reply('No role assigned to server.');
-        } else {
-          return message.reply('AutoRole removed.');
-        }
-    	}
-    } else {
-      return;
-    }
-  }
-});
-
 client.on('message', async message => {
   if (message.content.startsWith(adminPrefix)) {
     const command = message.content.slice(adminPrefix.length).split(/ +/);
@@ -195,11 +108,11 @@ client.on('message', async message => {
 
 //Im response
 client.on('message', message => {
-  if (!message.content.startsWith(adminPrefix)) {
+  if (!message.content.startsWith(adminPrefix) || !message.content.startsWith(prefix)) {
     var input = message.content.toLowerCase();
     let str = message.content;
-    let n = str.search(prefix + "hot");
-    if (n > -1) {
+    let n = str.includes(prefix + "hot");
+    if (n) {
       return commandUsed = true;
     }else {
       var output = "";
@@ -226,9 +139,9 @@ client.on('message', message => {
   var input = message.content.toLowerCase();
   const output = "I agree with the above statement";
   let str = message.content;
-  let n = str.search(prefix + "hot");
-  let found;
-  if (n > -1) {
+  let n = str.includes(prefix + "hot");
+  let found = false;
+  if (n) {
     return commandUsed = true;
   }else {
     if (commandUsed && message.author.bot) {
@@ -238,8 +151,8 @@ client.on('message', message => {
       if (input.includes('yurr') | input.includes('y u r r')) {
         var index = input.indexOf('yurr');
         var substring = input.substring(0, index);
-        if ( substring.search('im') || substring.search("i'm")) { 
-          return found = true;
+        if ( input.includes('im') || input.includes("i'm")) { 
+          found = true;
         }else if(!found) {          
           return message.channel.send(output);
         }
