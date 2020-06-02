@@ -2,10 +2,8 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
-const Sequelize = require('sequelize');
 const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
-const permissions = new Discord.Permissions("MANAGE_GUILD");
 let commandUsed = false;
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -17,7 +15,6 @@ const tools =  new Tools();
 // Initialize Discord Bot
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-const queue = new Map();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
