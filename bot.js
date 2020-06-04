@@ -82,52 +82,42 @@ client.on('message', async message => {
 client.on('message', async message => {
   if (message.content.startsWith(adminPrefix)) {
     const command = message.content.slice(adminPrefix.length).split(/ +/);
-    if (command === 'disableIm') {
-      try {
-        const add = await ComDisabled.create({
-          guildID: message.guild.id,
-          channelID: message.guild.channels.id,
-          imDisabled: 1 
-        });
-        return message.reply("\'im\' response disabled for this channel, renable with \"enableIm\"");
-      } catch (e) {
-        if (e.name === 'SequelizeUniqueConstraintError') {
-          return message.reply('\"Im\" already disabled, renable with \"enableIm\"' );
-        }
-        return message.reply('Something went wrong with disabling Im response.');
-      }
-    } else if (command === 'enableIm') {
-      const update = await ComDisabled.update({ imDisabled: 0 }, { where: { guildID: message.guild.id, channelID: message.guild.channels.id } });
-      if (update > 0) {
-        return message.reply(`Im response was renabled`);
-    }
-       return message.reply(`Need to disable to enable.`);
+    if (command == 'test') {
+      return tools.disableIm(message);
+    } else if (command == 'newtest') {
+      return tools.enableIm(message);
     }
   }
+  return;
 });
 
 //Im response
-client.on('message', message => {
-  if (!message.content.startsWith(adminPrefix) || !message.content.startsWith(prefix)) {
-    var input = message.content.toLowerCase();
-    let str = message.content;
-    let n = str.includes(prefix + "hot");
-    if (n) {
-      return commandUsed = true;
-    }else {
-      var output = "";
-      if (commandUsed && message.author.bot) {
-        return;
-      } else {
-        commandUsed = true;
-        if (input.includes('im')) {
-          var index = input.indexOf('im');
-          output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
-          return message.channel.send(output);
-        } else if (input.includes("i'm")) {
-          var index = input.indexOf("i'm");
-          output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
-          return message.channel.send(output);
+client.on('message', async message => {
+  if (message.content.startsWith(adminPrefix) || message.content.startsWith(prefix)) {
+    return;
+  }else {
+    let get = await tools.getimDisabled(message);
+    if (get) {
+      var input = message.content.toLowerCase();
+      let str = message.content;
+      let n = str.includes(prefix + "hot");
+      if (n) {
+        return commandUsed = true;
+      }else {
+        var output = "";
+        if (commandUsed && message.author.bot) {
+          return;
+        } else {
+          commandUsed = true;
+          if (input.includes('im')) {
+            var index = input.indexOf('im');
+            output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
+            return message.channel.send(output);
+          } else if (input.includes("i'm")) {
+            var index = input.indexOf("i'm");
+            output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
+            return message.channel.send(output);
+          }
         }
       }
     }

@@ -7,6 +7,7 @@ module.exports = class Tools {
         const sequelize = new Sequelize('database', 'user', 'password', {
             host: 'localhost',
             dialect: 'sqlite',
+            logging: false,
             storage: 'sql/database.sqlite'
         });
 
@@ -26,7 +27,7 @@ module.exports = class Tools {
         });
         
         // create table with columns of GuildId, channelID, and bool disabled
-        this.ComDisabled = sequelize.define('comDisable', {
+        this.ComDisabled = sequelize.define('disabledComs', {
             guildID : {
             type: Sequelize.STRING
             },
@@ -37,8 +38,15 @@ module.exports = class Tools {
             imDisabled : {
             type: Sequelize.INTEGER,
             defaultValue: 0
+            },
+            yurrDisabled : {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
             }
         });
+
+        this.Tags.sync();
+        this.ComDisabled.sync();
     }
     async addRole(tagName, message) {
         try {
@@ -92,6 +100,57 @@ module.exports = class Tools {
             if(e.name === 'SequelizeUniqueConstraintError') {
                 return;
             }return message.channel.send('Something went wrong!');
+        }
+    }
+
+    async disableIm(message) {
+        try {
+            const find = await this.ComDisabled.findAll({where : {guildID : message.guild.id, channelID : message.channel.id}});
+            if (!find) {
+                const create = await this.ComDisabled.create({
+                    guildID: message.guild.id,
+                    channelID: message.channel.id,
+                    imDisabled: 1,
+                });
+            
+                if (create) {
+                    return message.channel.send(`'Im' response disabled for this channel`)
+                }
+            } else { 
+                const disable = await this.ComDisabled.update({imDisabled : 1}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+                if(disable) {
+                    return message.channel.send(`'Im' response disabled for this channel`);
+                } 
+            }
+        }catch(e) {
+            console.log(e);
+            return message.channel.send('Something went wrong!');
+        }
+    }
+
+    async getimDisabled(message) {
+        try {
+            const get = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {channelID: message.channel.id, guildID: message.guild.id}});
+            if(get) {
+                const tempGet = await get.map((get) => get.imDisabled);
+                if (tempGet[0] == 0) {
+                    return true;
+                }return false;
+            } console.log('unable to retrieve data');
+        } catch(e) {
+            console.log("Error: " + e);
+        }
+    }
+
+    async enableIm(message) {
+        try {
+            const disable = await this.ComDisabled.update({imDisabled : 0}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+            if(disable) {
+                return message.channel.send(`'Im' response enabled for this channel`);
+            } 
+        }catch(e) {
+            console.log(e);
+            return message.channel.send('Something went wrong!');
         }
     }
 };
