@@ -86,6 +86,10 @@ client.on('message', async message => {
       return tools.disableIm(message);
     } else if (command == 'newtest') {
       return tools.enableIm(message);
+    } else if (command == 'yurrtest') {
+      return tools.disableYurr(message);
+    } else if (command == 'testyurr') {
+      return tools.enableYurr(message);
     }
   }
   return;
@@ -125,31 +129,34 @@ client.on('message', async message => {
 });
 
 //Yurr Response
-client.on('message', message => {
-  var input = message.content.toLowerCase();
-  const output = "I agree with the above statement";
-  let str = message.content;
-  let n = str.includes(prefix + "hot");
-  let found = false;
-  if (n) {
-    return commandUsed = true;
-  }else {
-    if (commandUsed && message.author.bot) {
-      return;
-    } else {
-      commandUsed = true;
-      if (input.includes('yurr') | input.includes('y u r r')) {
-        var index = input.indexOf('yurr');
-        var substring = input.substring(0, index);
-        if ( input.includes('im') || input.includes("i'm")) { 
-          found = true;
-        }else if(!found) {          
-          return message.channel.send(output);
+client.on('message', async message => {
+  const get = await tools.getyurrDisabled(message);
+  if (get) {
+    var input = message.content.toLowerCase();
+    const output = "I agree with the above statement";
+    let str = message.content;
+    let n = str.includes(prefix + "hot");
+    let found = false;
+    if (n) {
+      return commandUsed = true;
+    }else {
+      if (commandUsed && message.author.bot) {
+        return;
+      } else {
+        commandUsed = true;
+        if (input.includes('yurr') | input.includes('y u r r')) {
+          var index = input.indexOf('yurr');
+          var substring = input.substring(0, index);
+          if ( input.includes('im') || input.includes("i'm")) { 
+            found = true;
+          }else if(!found) {          
+            return message.channel.send(output);
+          }
         }
       }
     }
   }
-})
+});
 
 //React to innit
 client.on('message', message => {

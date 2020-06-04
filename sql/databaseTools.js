@@ -105,7 +105,7 @@ module.exports = class Tools {
 
     async disableIm(message) {
         try {
-            const find = await this.ComDisabled.findAll({where : {guildID : message.guild.id, channelID : message.channel.id}});
+            const find = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {guildID : message.guild.id, channelID : message.channel.id}});
             if (!find) {
                 const create = await this.ComDisabled.create({
                     guildID: message.guild.id,
@@ -151,6 +151,57 @@ module.exports = class Tools {
         }catch(e) {
             console.log(e);
             return message.channel.send('Something went wrong!');
+        }
+    }
+
+    async disableYurr(message) {
+        try {
+            const find = await this.ComDisabled.findAll({attributes:["yurrDisabled"], where : {guildID : message.guild.id, channelID : message.channel.id}});
+            if (!find) {
+                const create = await this.ComDisabled.create({
+                    guildID: message.guild.id,
+                    channelID: message.channel.id,
+                    yurrDisabled: 1,
+                });
+            
+                if (create) {
+                    return message.channel.send(`'Yurr' response disabled for this channel`)
+                }
+            } else { 
+                const disable = await this.ComDisabled.update({yurrDisabled : 1}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+                if(disable) {
+                    return message.channel.send(`'Yurr' response disabled for this channel`);
+                } 
+            }
+        }catch(e) {
+            console.log(e);
+            return message.channel.send('Something went wrong!');
+        }
+    }
+
+    async enableYurr(message) {
+        try {
+            const disable = await this.ComDisabled.update({yurrDisabled : 0}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+            if(disable) {
+                return message.channel.send(`'Yurr' response enabled for this channel`);
+            } 
+        }catch(e) {
+            console.log(e);
+            return message.channel.send('Something went wrong!');
+        }
+    }
+
+    async getyurrDisabled(message) {
+        try {
+            const get = await this.ComDisabled.findAll({attributes:["yurrDisabled"], where : {channelID: message.channel.id, guildID: message.guild.id}});
+            if(get) {
+                const tempGet = await get.map((get) => get.yurrDisabled);
+                if (tempGet[0] == 0) {
+                    return true;
+                }return false;
+            } console.log('unable to retrieve data');
+        } catch(e) {
+            console.log("Error: " + e);
         }
     }
 };
