@@ -79,22 +79,6 @@ client.on('message', async message => {
   }
 });
 
-client.on('message', async message => {
-  if (message.content.startsWith(adminPrefix)) {
-    const command = message.content.slice(adminPrefix.length).split(/ +/);
-    if (command == 'test') {
-      return tools.disableIm(message);
-    } else if (command == 'newtest') {
-      return tools.enableIm(message);
-    } else if (command == 'yurrtest') {
-      return tools.disableYurr(message);
-    } else if (command == 'testyurr') {
-      return tools.enableYurr(message);
-    }
-  }
-  return;
-});
-
 //Im response
 client.on('message', async message => {
   if (message.content.startsWith(adminPrefix) || message.content.startsWith(prefix)) {
@@ -130,27 +114,32 @@ client.on('message', async message => {
 
 //Yurr Response
 client.on('message', async message => {
-  const get = await tools.getyurrDisabled(message);
-  if (get) {
-    var input = message.content.toLowerCase();
-    const output = "I agree with the above statement";
-    let str = message.content;
-    let n = str.includes(prefix + "hot");
-    let found = false;
-    if (n) {
-      return commandUsed = true;
-    }else {
-      if (commandUsed && message.author.bot) {
-        return;
-      } else {
-        commandUsed = true;
-        if (input.includes('yurr') | input.includes('y u r r')) {
-          var index = input.indexOf('yurr');
-          var substring = input.substring(0, index);
-          if ( input.includes('im') || input.includes("i'm")) { 
-            found = true;
-          }else if(!found) {          
-            return message.channel.send(output);
+  if (message.content.startsWith(adminPrefix) || message.content.startsWith(prefix)) {
+    return;
+  }else {
+    const get = await tools.getyurrDisabled(message);
+    if (get) {
+      var input = message.content.toLowerCase();
+      const output = "I agree with the above statement";
+      let str = message.content;
+      let n = str.includes(prefix + "hot");
+      let found = false;
+      if (n) {
+        return commandUsed = true;
+      }else {
+        if (commandUsed && message.author.bot) {
+          return;
+        } else {
+          commandUsed = true;
+          if (input.includes('yurr') | input.includes('y u r r')) {
+            var index = input.indexOf('yurr');
+            console.log(input);
+            var substring = input.substring(0, index);
+            if ( input.includes('im ') || input.includes("i'm ")) { 
+              found = true;
+            }else if(!found) {          
+              return message.channel.send(output);
+            }
           }
         }
       }

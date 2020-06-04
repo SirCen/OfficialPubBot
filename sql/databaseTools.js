@@ -114,12 +114,12 @@ module.exports = class Tools {
                 });
             
                 if (create) {
-                    return message.channel.send(`'Im' response disabled for this channel`)
+                    return message.channel.send(`'Im' response disabled for this server`)
                 }
             } else { 
                 const disable = await this.ComDisabled.update({imDisabled : 1}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
                 if(disable) {
-                    return message.channel.send(`'Im' response disabled for this channel`);
+                    return message.channel.send(`'Im' response disabled for this server`);
                 } 
             }
         }catch(e) {
@@ -146,7 +146,7 @@ module.exports = class Tools {
         try {
             const disable = await this.ComDisabled.update({imDisabled : 0}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
             if(disable) {
-                return message.channel.send(`'Im' response enabled for this channel`);
+                return message.channel.send(`'Im' response enabled for this server`);
             } 
         }catch(e) {
             console.log(e);
@@ -165,12 +165,12 @@ module.exports = class Tools {
                 });
             
                 if (create) {
-                    return message.channel.send(`'Yurr' response disabled for this channel`)
+                    return message.channel.send(`'Yurr' response disabled for this server`)
                 }
             } else { 
                 const disable = await this.ComDisabled.update({yurrDisabled : 1}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
                 if(disable) {
-                    return message.channel.send(`'Yurr' response disabled for this channel`);
+                    return message.channel.send(`'Yurr' response disabled for this server`);
                 } 
             }
         }catch(e) {
@@ -183,7 +183,7 @@ module.exports = class Tools {
         try {
             const disable = await this.ComDisabled.update({yurrDisabled : 0}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
             if(disable) {
-                return message.channel.send(`'Yurr' response enabled for this channel`);
+                return message.channel.send(`'Yurr' response enabled for this server`);
             } 
         }catch(e) {
             console.log(e);
