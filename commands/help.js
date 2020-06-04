@@ -13,9 +13,6 @@ module.exports = {
       data.push('Here\'s a list of all my commands:');
       data.push(commands.map(command => command.name).join(', '));
       data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
-			data.push(`\nTo send admin commands, please use \`${adminPrefix}\`[command name].`);
-			data.push('\nMy admin commands are:');
-			data.push('\n autorole, editautorole, removeautorole');
 			data.push('\n');
 			data.push('\n Invite me to another server! \n -> https://discordapp.com/api/oauth2/authorize?client_id=608365015610949661&permissions=0&scope=bot')
       return message.author.send(data, { split: true })
@@ -39,7 +36,7 @@ module.exports = {
 
     data.push(`**Name:** ${command.name}`);
 
-    if (command.aliases) {
+    if (command.usuage) {
       data.push(`**Aliases:** ${command.aliases.join(', ')}`);
     }
     if (command.description) {
