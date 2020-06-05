@@ -26,7 +26,7 @@ client.on('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.user.username + ' - (' + client.user.id + ')');
-    client.user.setActivity('Fromis_9', { type: 'LISTENING' });
+    client.user.setActivity('Currently in Beta | ?help');
     logger.info('Servers: ');
     client.guilds.forEach((guild) => {
       logger.info('-' + guild.name + '-' + guild.id)
@@ -133,7 +133,6 @@ client.on('message', async message => {
           commandUsed = true;
           if (input.includes('yurr') | input.includes('y u r r')) {
             var index = input.indexOf('yurr');
-            console.log(input);
             var substring = input.substring(0, index);
             if ( input.includes('im ') || input.includes("i'm ")) { 
               found = true;
