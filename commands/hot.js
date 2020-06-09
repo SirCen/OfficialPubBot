@@ -4,7 +4,7 @@ module.exports = {
   args: true,
   usage: '<thing to be judged on hotness>',
   execute(message, args) {
-      var newMessage = message.content.slice(4);
+      var newMessage = message.content.slice(5);
       var rand = Math.floor(Math.random()*2);
       if (rand === 0) {
         return message.channel.send(newMessage + ' is HOT!');

@@ -41,8 +41,7 @@ module.exports = class Tools {
             }
         });
 
-        this.Tags.sync();
-        this.ComDisabled.sync();
+        
 
     }
     async addRole(tagName, message) {
@@ -141,10 +140,20 @@ module.exports = class Tools {
 
     async enableIm(message) {
         try {
-            const disable = await this.ComDisabled.update({imDisabled : 0}, { where: { guildID : message.guild.id}});
-            if(disable) {
-                return message.channel.send(`'Im' response enabled for this server`);
-            } 
+	    const find = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {guildID : message.guild.id}});
+            if (!find) {
+                const create = await this.ComDisabled.create({
+                    guildID: message.guild.id,
+                    channelID: message.channel.id,
+                    imDisabled: 0,
+                });
+		if (create) {return message.channel.send(`'Im' response enabled for this server`);}
+	    }else {	
+	            const disable = await this.ComDisabled.update({imDisabled : 0}, { where: { guildID : message.guild.id}});
+	            if(disable) {
+	                return message.channel.send(`'Im' response enabled for this server`);
+            	    }
+	    } 
         }catch(e) {
             console.log(e);
             return message.channel.send('Something went wrong!');
