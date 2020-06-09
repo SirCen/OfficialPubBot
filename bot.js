@@ -30,7 +30,14 @@ client.on('ready', () => {
     logger.info('Servers: ');
     client.guilds.forEach((guild) => {
       logger.info('-' + guild.name + '-' + guild.id)
-    })
+    });
+    client.guilds.forEach((guild) => {
+      tools.ComDisabled.create({
+          guildID: guild.id,
+          imDisabled: 0,
+          yurrDisabled: 0
+      });
+  });
     logger.info(client.commands);
 });
 
@@ -59,6 +66,9 @@ client.on('message', async message => {
   }
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
+  if(commandName == "") {
+    return;
+  }
   if (!client.commands.has(commandName)) {
     return message.channel.send('That is not a valid command, please try again :))');
   }else {
@@ -93,7 +103,10 @@ client.on('message', async message => {
         return commandUsed = true;
       }else {
         var output = "";
-        if (commandUsed && message.author.bot) {
+        if (commandUsed) {
+          return;
+        }
+        if (message.author.bot) {
           return;
         } else {
           commandUsed = true;

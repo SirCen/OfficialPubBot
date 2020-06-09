@@ -31,10 +31,6 @@ module.exports = class Tools {
             guildID : {
             type: Sequelize.STRING
             },
-            channelID : {
-            type: Sequelize.STRING,
-            unique: true
-            },
             imDisabled : {
             type: Sequelize.INTEGER,
             defaultValue: 0
@@ -47,6 +43,7 @@ module.exports = class Tools {
 
         this.Tags.sync();
         this.ComDisabled.sync();
+
     }
     async addRole(tagName, message) {
         try {
@@ -105,7 +102,7 @@ module.exports = class Tools {
 
     async disableIm(message) {
         try {
-            const find = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {guildID : message.guild.id, channelID : message.channel.id}});
+            const find = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {guildID : message.guild.id}});
             if (!find) {
                 const create = await this.ComDisabled.create({
                     guildID: message.guild.id,
@@ -117,7 +114,7 @@ module.exports = class Tools {
                     return message.channel.send(`'Im' response disabled for this server`)
                 }
             } else { 
-                const disable = await this.ComDisabled.update({imDisabled : 1}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+                const disable = await this.ComDisabled.update({imDisabled : 1}, { where: { guildID : message.guild.id}});
                 if(disable) {
                     return message.channel.send(`'Im' response disabled for this server`);
                 } 
@@ -130,7 +127,7 @@ module.exports = class Tools {
 
     async getimDisabled(message) {
         try {
-            const get = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {channelID: message.channel.id, guildID: message.guild.id}});
+            const get = await this.ComDisabled.findAll({attributes:["imDisabled"], where : {guildID : message.guild.id}});
             if(get) {
                 const tempGet = await get.map((get) => get.imDisabled);
                 if (tempGet[0] == 0) {
@@ -144,7 +141,7 @@ module.exports = class Tools {
 
     async enableIm(message) {
         try {
-            const disable = await this.ComDisabled.update({imDisabled : 0}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+            const disable = await this.ComDisabled.update({imDisabled : 0}, { where: { guildID : message.guild.id}});
             if(disable) {
                 return message.channel.send(`'Im' response enabled for this server`);
             } 
@@ -156,7 +153,7 @@ module.exports = class Tools {
 
     async disableYurr(message) {
         try {
-            const find = await this.ComDisabled.findAll({attributes:["yurrDisabled"], where : {guildID : message.guild.id, channelID : message.channel.id}});
+            const find = await this.ComDisabled.findAll({attributes:["yurrDisabled"], where : {guildID : message.guild.id}});
             if (!find) {
                 const create = await this.ComDisabled.create({
                     guildID: message.guild.id,
@@ -168,7 +165,7 @@ module.exports = class Tools {
                     return message.channel.send(`'Yurr' response disabled for this server`)
                 }
             } else { 
-                const disable = await this.ComDisabled.update({yurrDisabled : 1}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+                const disable = await this.ComDisabled.update({yurrDisabled : 1}, { where: { guildID : message.guild.id}});
                 if(disable) {
                     return message.channel.send(`'Yurr' response disabled for this server`);
                 } 
@@ -181,7 +178,7 @@ module.exports = class Tools {
 
     async enableYurr(message) {
         try {
-            const disable = await this.ComDisabled.update({yurrDisabled : 0}, { where: { guildID : message.guild.id, channelID : message.channel.id}});
+            const disable = await this.ComDisabled.update({yurrDisabled : 0}, { where: { guildID : message.guild.id}});
             if(disable) {
                 return message.channel.send(`'Yurr' response enabled for this server`);
             } 
@@ -193,7 +190,7 @@ module.exports = class Tools {
 
     async getyurrDisabled(message) {
         try {
-            const get = await this.ComDisabled.findAll({attributes:["yurrDisabled"], where : {channelID: message.channel.id, guildID: message.guild.id}});
+            const get = await this.ComDisabled.findAll({attributes:["yurrDisabled"], where : {guildID: message.guild.id}});
             if(get) {
                 const tempGet = await get.map((get) => get.yurrDisabled);
                 if (tempGet[0] == 0) {
