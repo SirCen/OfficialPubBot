@@ -107,15 +107,33 @@ client.on('message', async message => {
           return;
         } else {
           commandUsed = true;
-          if (input.includes('im')) {
-            var index = input.indexOf('im');
-            output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
-            return message.channel.send(output);
-          } else if (input.includes("i'm")) {
-            var index = input.indexOf("i'm");
-            output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
-            return message.channel.send(output);
-          }
+          const msg = input.split(' ');
+          var newmsg = "";
+          msg.forEach(element => {
+            if (element == 'im') {
+              var index = input.indexOf('im');
+              var end = input.substring(index+2).split(' ');
+              for(let i = 0; i < end.length; i++) {
+                newmsg += end[i] + " ";
+              }
+              newmsg = newmsg.trimRight();
+              output += "Hi" + newmsg + ", I'm Pub Bot";
+              if (newmsg != '') {
+                return message.channel.send(output);
+              }
+            } else if (element =="i'm") {
+              var index = input.indexOf("i'm");
+              var end = input.substring(index+3).split(' ');
+              for(let i = 0; i < end.length; i++) {
+                  newmsg += end[i] + " ";
+              }
+              newmsg = newmsg.trimRight();
+              output += "Hi " + newmsg + ", I'm Pub Bot";
+              if (newmsg != '') {
+                return message.channel.send(output);
+              }
+            }
+          });
         }
       }
     }
