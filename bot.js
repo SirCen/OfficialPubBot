@@ -22,16 +22,18 @@ for (const file of commandFiles) {
 }
 
 //logs and sets activity when bot is ready
-client.on('ready', () => {
+client.once('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.user.username + ' - (' + client.user.id + ')');
     client.user.setActivity('Currently in Beta | ?help');
     logger.info('Servers: ');
     client.guilds.forEach((guild) => {
-      logger.info('-' + guild.name + '-' + guild.id)
-    })
+      logger.info('-' + guild.name + '-' + guild.id);	
+    });
     logger.info(client.commands);
+    tools.Tags.sync();
+    tools.ComDisabled.sync();
 });
 
 //add role on join
@@ -59,6 +61,9 @@ client.on('message', async message => {
   }
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
+  if(commandName == "") {
+    return;
+  }
   if (!client.commands.has(commandName)) {
     return message.channel.send('That is not a valid command, please try again :))');
   }else {
@@ -92,8 +97,13 @@ client.on('message', async message => {
       if (n) {
         return commandUsed = true;
       }else {
+	
         var output = "";
-        if (commandUsed && message.author.bot) {
+        //if (commandUsed) {
+        //  return;
+        //}
+	
+        if (message.author.bot) {
           return;
         } else {
           commandUsed = true;
