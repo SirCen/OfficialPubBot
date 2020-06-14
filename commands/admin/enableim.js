@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const Tools = require('../sql/databaseTools.js');
+const Tools = require('../../sql/databaseTools.js');
 const permissions = new Discord.Permissions("MANAGE_GUILD");
 
 const tools = new Tools();
