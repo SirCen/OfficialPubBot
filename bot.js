@@ -43,6 +43,9 @@ client.on('guildMemberAdd', async guildMember => {
     if(autoRole) {
       let tempRole = autoRole.map((autoRole) => autoRole.role);
       let newRole = guildMember.guild.roles.find(role => role.name === tempRole[0] );
+      if (newRole == null) {
+        return;
+      }
       guildMember.addRole(newRole);
     } return;
   } catch (err) {
