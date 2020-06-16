@@ -1,5 +1,4 @@
 const Discord = require("discord.io");
-const { DiscordAPIError } = require("discord.js");
 
 module.exports = {
     name: 'userinfo',

@@ -92,8 +92,8 @@ client.on('message', async message => {
     const adminCommand = client.adminCommands.get(commandName);
     if(adminCommand.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
-      if (command.usage) {
-        reply += `\nThe proper usage would be: \'${prefix}${command.name} ${command.usage}`;
+      if (adminCommand.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${adminCommand.name} ${adminCommand.usage}`;
       }
       return message.channel.send(reply);
     }
