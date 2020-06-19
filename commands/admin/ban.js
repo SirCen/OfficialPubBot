@@ -8,7 +8,7 @@ module.exports = {
     usage: '<member to be banned> <reason for ban>',
     async execute(message, args) {
         const user = message.mentions.users.first();
-        const banReason = args.slice(1).join(' ');
+        let banReason = args.slice(1).join(' ');
       if (message.member.hasPermission(permissions)) {
         if (!user) {
             try {
@@ -25,7 +25,7 @@ module.exports = {
             return message.channel.send('You can not ban yourself!');
         }
         if(!banReason) {
-            return message.channel.send('You need to add a reason!');
+            banReason = `Banned By ${message.author.tag}`;
         }
         if(!message.guild.member(user).bannable) {
             return message.channel.send('I do not have permission to ban this member!');
