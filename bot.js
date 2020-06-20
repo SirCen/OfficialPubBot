@@ -15,10 +15,16 @@ const tools =  new Tools();
 // Initialize Discord Bot
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+client.adminCommands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands/everyone').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+  const command = require(`./commands/everyone/${file}`);
   client.commands.set(command.name, command);
+}
+const adminCommand = fs.readdirSync('./commands/admin').filter(file => file.endsWith('.js'));
+for (const file of adminCommand) {
+  const command = require(`./commands/admin/${file}`);
+  client.adminCommands.set(command.name, command);
 }
 
 //logs and sets activity when bot is ready
@@ -26,7 +32,7 @@ client.once('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.user.username + ' - (' + client.user.id + ')');
-    client.user.setActivity('Currently in Beta | ?help');
+    client.user.setActivity(`Currently in Beta | ${prefix}help`);
     logger.info('Servers: ');
     client.guilds.forEach((guild) => {
       logger.info('-' + guild.name + '-' + guild.id);	
@@ -67,9 +73,7 @@ client.on('message', async message => {
   if(commandName == "") {
     return;
   }
-  if (!client.commands.has(commandName)) {
-    return message.channel.send('That is not a valid command, please try again :))');
-  }else {
+  if (client.commands.has(commandName)) {
     const command = client.commands.get(commandName);
     if (command.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
@@ -79,11 +83,28 @@ client.on('message', async message => {
       return message.channel.send(reply);
     }
     try {
-  	   command.execute(message, args);
+       command.execute(message, args);
      } catch (error) {
   	    console.error(error);
-  	     message.reply('there was an error trying to execute that command!');
+        return message.channel.send('There was an error executing that command.');
     }
+  }else if (client.adminCommands.has(commandName)) {
+    const adminCommand = client.adminCommands.get(commandName);
+    if(adminCommand.args && !args.length) {
+      let reply = `You didn't provide any arguments, ${message.author}`;
+      if (adminCommand.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${adminCommand.name} ${adminCommand.usage}`;
+      }
+      return message.channel.send(reply);
+    }
+    try {
+      adminCommand.execute(message, args);
+    } catch (error) {
+      console.error(error);
+      return message.channel.send('There was an error executing that command.');
+    }
+  } else {
+    return message.channel.send('That is not a valid command, please try again :))');
   }
 });
 
