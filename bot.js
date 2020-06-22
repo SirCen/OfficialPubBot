@@ -116,49 +116,38 @@ client.on('message', async message => {
     let get = await tools.getimDisabled(message);
     if (get) {
       var input = message.content.toLowerCase();
-      let str = message.content;
-      let n = str.includes(prefix + "hot");
-      if (n) {
-        return commandUsed = true;
-      }else {
-	
-        var output = "";
-        //if (commandUsed) {
-        //  return;
-        //}
-	
-        if (message.author.bot) {
-          return;
-        } else {
-          commandUsed = true;
-          const msg = input.split(' ');
-          var newmsg = "";
-          msg.forEach(element => {
-            if (element == 'im') {
-              var index = input.indexOf('im');
-              var end = input.substring(index+2).split(' ');
-              for(let i = 0; i < end.length; i++) {
-                newmsg += end[i] + " ";
-              }
-              newmsg = newmsg.trimRight();
-              output += "Hi" + newmsg + ", I'm Pub Bot";
-              if (newmsg != '') {
-                return message.channel.send(output);
-              }
-            } else if (element =="i'm") {
-              var index = input.indexOf("i'm");
-              var end = input.substring(index+3).split(' ');
-              for(let i = 0; i < end.length; i++) {
-                  newmsg += end[i] + " ";
-              }
-              newmsg = newmsg.trimRight();
-              output += "Hi " + newmsg + ", I'm Pub Bot";
-              if (newmsg != '') {
-                return message.channel.send(output);
-              }
+      var output = "";
+      if (message.author.bot) {
+        return;
+      } else {
+        commandUsed = true;
+        const msg = input.split(' ');
+        var newmsg = "";
+        msg.forEach(element => {
+          if (element == 'im') {
+            var index = input.indexOf('im');
+            var end = input.substring(index+2).split(' ');
+            for(let i = 0; i < end.length; i++) {
+              newmsg += end[i] + " ";
             }
-          });
-        }
+            newmsg = newmsg.trimRight();
+            output += "Hi" + newmsg + ", I'm Pub Bot";
+            if (newmsg != '') {
+              return message.channel.send(output);
+            }
+          } else if (element =="i'm") {
+            var index = input.indexOf("i'm");
+            var end = input.substring(index+3).split(' ');
+            for(let i = 0; i < end.length; i++) {
+              newmsg += end[i] + " ";
+            }
+            newmsg = newmsg.trimRight();
+            output += "Hi " + newmsg + ", I'm Pub Bot";
+            if (newmsg != '') {
+              return message.channel.send(output);
+            }
+          }
+        });
       }
     }
   }
@@ -173,24 +162,17 @@ client.on('message', async message => {
     if (get) {
       var input = message.content.toLowerCase();
       const output = "I agree with the above statement";
-      let str = message.content;
-      let n = str.includes(prefix + "hot");
-      let found = false;
-      if (n) {
-        return commandUsed = true;
-      }else {
-        if (commandUsed && message.author.bot) {
-          return;
-        } else {
-          commandUsed = true;
-          if (input.includes('yurr') | input.includes('y u r r')) {
-            var index = input.indexOf('yurr');
-            var substring = input.substring(0, index);
-            if ( input.includes('im ') || input.includes("i'm ")) { 
-              found = true;
-            }else if(!found) {          
-              return message.channel.send(output);
-            }
+      let found;
+      if (message.author.bot) {
+        return;
+      } else {
+        if (input.includes('yurr') | input.includes('y u r r')) {
+          var index = input.indexOf('yurr');
+          var substring = input.substring(0, index);
+          if ( input.includes('im ') || input.includes("i'm ")) { 
+            found = true;
+          }else if(!found) {          
+            return message.channel.send(output);
           }
         }
       }
