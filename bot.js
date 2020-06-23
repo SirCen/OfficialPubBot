@@ -120,7 +120,6 @@ client.on('message', async message => {
       if (message.author.bot) {
         return;
       } else {
-        commandUsed = true;
         const msg = input.split(' ');
         var newmsg = "";
         msg.forEach(element => {
@@ -160,18 +159,16 @@ client.on('message', async message => {
   }else {
     const get = await tools.getyurrDisabled(message);
     if (get) {
-      var input = message.content.toLowerCase();
+      var input = message.content.toLowerCase().split(' ');
       const output = "I agree with the above statement";
-      let found;
       if (message.author.bot) {
         return;
       } else {
-        if (input.includes('yurr') | input.includes('y u r r')) {
-          var index = input.indexOf('yurr');
-          var substring = input.substring(0, index);
-          if ( input.includes('im ') || input.includes("i'm ")) { 
-            found = true;
-          }else if(!found) {          
+        if (input.includes('im') || input.includes("i'm")) { 
+          return;
+        }else {
+          let wideyurr = input.join(' ');
+          if (input.includes('yurr') | wideyurr.includes('y u r r')) {
             return message.channel.send(output);
           }
         }
