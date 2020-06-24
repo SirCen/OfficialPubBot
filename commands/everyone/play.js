@@ -73,10 +73,9 @@ module.exports = {
 
         const dispatcher = serverQueue.connection
         .playStream(ytdl(song.url, {highWaterMark: 1<<25 }))
-        .on("finish", (reason) => {
+        .on("end", () => {
             serverQueue.songs.shift();
             this.play(message, serverQueue.songs[0]);
-            console.log(reason);
         })
         .on("error", error => console.log(error));
 
