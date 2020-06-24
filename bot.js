@@ -18,6 +18,7 @@ const tools =  new Tools();
 const client = new Client();
 client.commands = new Discord.Collection();
 client.adminCommands = new Discord.Collection();
+client.music = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands/everyone').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/everyone/${file}`);
@@ -27,6 +28,11 @@ const adminCommand = fs.readdirSync('./commands/admin').filter(file => file.ends
 for (const file of adminCommand) {
   const command = require(`./commands/admin/${file}`);
   client.adminCommands.set(command.name, command);
+}
+const music = fs.readdirSync('./commands/music').filter(file => file.endsWith('.js'));
+for (const file of music) {
+  const command = require(`./commands/music/${file}`);
+  client.music.set(command.name, command);
 }
 
 //logs and sets activity when bot is ready
@@ -100,6 +106,21 @@ client.on('message', async message => {
     }
     try {
       adminCommand.execute(message, args);
+    } catch (error) {
+      console.error(error);
+      return message.channel.send('There was an error executing that command.');
+    }
+  } else if (client.music.has(commandName)) {
+    const music = client.music.get(commandName);
+    if(music.args && !args.length) {
+      let reply = `You didn't provide any arguments, ${message.author}`;
+      if (adminCommand.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${music.name} ${music.usage}`;
+      }
+      return message.channel.send(reply);
+    }
+    try {
+      music.execute(message, args);
     } catch (error) {
       console.error(error);
       return message.channel.send('There was an error executing that command.');
