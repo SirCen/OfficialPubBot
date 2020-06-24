@@ -2,7 +2,6 @@ module.exports = {
     name: "stop",
     description: "Stops all songs in queue",
     args: false,
-    usage: '<stops all songs in queue>',
     async execute(message, args) {
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!message.member.voiceChannel) {
