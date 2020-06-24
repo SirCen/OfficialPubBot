@@ -1,17 +1,18 @@
 module.exports = {
-    name: "skip",
-    description: "Skips the current song",
+    name: "stop",
+    description: "Stops all songs in queue",
     args: false,
-    usage: '<skips current song playing>',
+    usage: '<stops all songs in queue>',
     async execute(message, args) {
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!message.member.voiceChannel) {
             return message.channel.send('You must be in a voice channel to skip!');
         }
         if (!serverQueue) {
-            return message.channel.send('There is no song to skip!');
+            return message.channel.send('Theres no songs to be stopped!');
         }
-        message.channel.send(`Skipping: **${serverQueue.songs[0].title}**`);
+        serverQueue.songs = [];
+        message.channel.send('Stopping Songs and Leaving Channel!');
         serverQueue.connection.dispatcher.end();
     }
 };
