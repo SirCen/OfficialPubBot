@@ -1,10 +1,12 @@
 const Discord = require('discord.js');
+const Client = require('./client/client');
 const fs = require('fs');
 const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
 const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
-let commandUsed = false;
+const ytdl = require('ytdl-core');
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -13,7 +15,7 @@ logger.add(new logger.transports.Console, {
 logger.level = 'debug';
 const tools =  new Tools();
 // Initialize Discord Bot
-const client = new Discord.Client();
+const client = new Client();
 client.commands = new Discord.Collection();
 client.adminCommands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands/everyone').filter(file => file.endsWith('.js'));
@@ -61,8 +63,7 @@ client.on('guildMemberAdd', async guildMember => {
 
 //commands
 client.on('message', async message => {
-  if(commandUsed && message.author.bot){
-    commandUsed = true;
+  if(message.author.bot) {
     return;
   }
   if (!message.content.startsWith(prefix)) {
