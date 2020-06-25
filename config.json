@@ -1,5 +1,5 @@
 {
   "prefix": "?",
   "adminPrefix": "%",
-  "token": "NjQxNDI2ODM0NTE2NjA2OTc3.Xu_Xyw.57wJYpsdBrAA8pg43dBI2fjFhH4"
+  "token": "process.env.BOT_TOKEN"
 }
