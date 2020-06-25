@@ -1,10 +1,12 @@
 const Discord = require('discord.js');
+const Client = require('./client/client');
 const fs = require('fs');
 const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
 const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
-let commandUsed = false;
+const ytdl = require('ytdl-core');
+
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -13,25 +15,39 @@ logger.add(new logger.transports.Console, {
 logger.level = 'debug';
 const tools =  new Tools();
 // Initialize Discord Bot
-const client = new Discord.Client();
+const client = new Client();
 client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+client.adminCommands = new Discord.Collection();
+client.music = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands/everyone').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+  const command = require(`./commands/everyone/${file}`);
   client.commands.set(command.name, command);
+}
+const adminCommand = fs.readdirSync('./commands/admin').filter(file => file.endsWith('.js'));
+for (const file of adminCommand) {
+  const command = require(`./commands/admin/${file}`);
+  client.adminCommands.set(command.name, command);
+}
+const music = fs.readdirSync('./commands/music').filter(file => file.endsWith('.js'));
+for (const file of music) {
+  const command = require(`./commands/music/${file}`);
+  client.music.set(command.name, command);
 }
 
 //logs and sets activity when bot is ready
-client.on('ready', () => {
+client.once('ready', () => {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(client.user.username + ' - (' + client.user.id + ')');
-    client.user.setActivity('Fromis_9', { type: 'LISTENING' });
+    client.user.setActivity(`Currently in Beta | ${prefix}help`);
     logger.info('Servers: ');
     client.guilds.forEach((guild) => {
-      logger.info('-' + guild.name + '-' + guild.id)
-    })
+      logger.info('-' + guild.name + '-' + guild.id);	
+    });
     logger.info(client.commands);
+    tools.Tags.sync();
+    tools.ComDisabled.sync();
 });
 
 //add role on join
@@ -41,6 +57,9 @@ client.on('guildMemberAdd', async guildMember => {
     if(autoRole) {
       let tempRole = autoRole.map((autoRole) => autoRole.role);
       let newRole = guildMember.guild.roles.find(role => role.name === tempRole[0] );
+      if (newRole == null) {
+        return;
+      }
       guildMember.addRole(newRole);
     } return;
   } catch (err) {
@@ -50,8 +69,7 @@ client.on('guildMemberAdd', async guildMember => {
 
 //commands
 client.on('message', async message => {
-  if(commandUsed && message.author.bot){
-    commandUsed = true;
+  if(message.author.bot) {
     return;
   }
   if (!message.content.startsWith(prefix)) {
@@ -59,9 +77,10 @@ client.on('message', async message => {
   }
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
-  if (!client.commands.has(commandName)) {
-    return message.channel.send('That is not a valid command, please try again :))');
-  }else {
+  if(commandName == "") {
+    return;
+  }
+  if (client.commands.has(commandName)) {
     const command = client.commands.get(commandName);
     if (command.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
@@ -71,11 +90,43 @@ client.on('message', async message => {
       return message.channel.send(reply);
     }
     try {
-  	   command.execute(message, args);
+       command.execute(message, args);
      } catch (error) {
   	    console.error(error);
-  	     message.reply('there was an error trying to execute that command!');
+        return message.channel.send('There was an error executing that command.');
     }
+  }else if (client.adminCommands.has(commandName)) {
+    const adminCommand = client.adminCommands.get(commandName);
+    if(adminCommand.args && !args.length) {
+      let reply = `You didn't provide any arguments, ${message.author}`;
+      if (adminCommand.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${adminCommand.name} ${adminCommand.usage}`;
+      }
+      return message.channel.send(reply);
+    }
+    try {
+      adminCommand.execute(message, args);
+    } catch (error) {
+      console.error(error);
+      return message.channel.send('There was an error executing that command.');
+    }
+  } else if (client.music.has(commandName)) {
+    const music = client.music.get(commandName);
+    if(music.args && !args.length) {
+      let reply = `You didn't provide any arguments, ${message.author}`;
+      if (adminCommand.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${music.name} ${music.usage}`;
+      }
+      return message.channel.send(reply);
+    }
+    try {
+      music.execute(message, args);
+    } catch (error) {
+      console.error(error);
+      return message.channel.send('There was an error executing that command.');
+    }
+  } else {
+    return message.channel.send('That is not a valid command, please try again :))');
   }
 });
 
@@ -87,26 +138,37 @@ client.on('message', async message => {
     let get = await tools.getimDisabled(message);
     if (get) {
       var input = message.content.toLowerCase();
-      let str = message.content;
-      let n = str.includes(prefix + "hot");
-      if (n) {
-        return commandUsed = true;
-      }else {
-        var output = "";
-        if (commandUsed && message.author.bot) {
-          return;
-        } else {
-          commandUsed = true;
-          if (input.includes('im')) {
+      var output = "";
+      if (message.author.bot) {
+        return;
+      } else {
+        const msg = input.split(' ');
+        var newmsg = "";
+        msg.forEach(element => {
+          if (element == 'im') {
             var index = input.indexOf('im');
-            output += "Hi" + input.substring(index+2) + ", I'm Pub Bot";
-            return message.channel.send(output);
-          } else if (input.includes("i'm")) {
+            var end = input.substring(index+2).split(' ');
+            for(let i = 0; i < end.length; i++) {
+              newmsg += end[i] + " ";
+            }
+            newmsg = newmsg.trimRight();
+            output += "Hi" + newmsg + ", I'm Pub Bot";
+            if (newmsg != '') {
+              return message.channel.send(output);
+            }
+          } else if (element =="i'm") {
             var index = input.indexOf("i'm");
-            output += "Hi" + input.substring(index+3) + ", I'm Pub Bot";
-            return message.channel.send(output);
+            var end = input.substring(index+3).split(' ');
+            for(let i = 0; i < end.length; i++) {
+              newmsg += end[i] + " ";
+            }
+            newmsg = newmsg.trimRight();
+            output += "Hi " + newmsg + ", I'm Pub Bot";
+            if (newmsg != '') {
+              return message.channel.send(output);
+            }
           }
-        }
+        });
       }
     }
   }
@@ -119,27 +181,17 @@ client.on('message', async message => {
   }else {
     const get = await tools.getyurrDisabled(message);
     if (get) {
-      var input = message.content.toLowerCase();
+      var input = message.content.toLowerCase().split(' ');
       const output = "I agree with the above statement";
-      let str = message.content;
-      let n = str.includes(prefix + "hot");
-      let found = false;
-      if (n) {
-        return commandUsed = true;
-      }else {
-        if (commandUsed && message.author.bot) {
+      if (message.author.bot) {
+        return;
+      } else {
+        if (input.includes('im') || input.includes("i'm")) { 
           return;
-        } else {
-          commandUsed = true;
-          if (input.includes('yurr') | input.includes('y u r r')) {
-            var index = input.indexOf('yurr');
-            console.log(input);
-            var substring = input.substring(0, index);
-            if ( input.includes('im ') || input.includes("i'm ")) { 
-              found = true;
-            }else if(!found) {          
-              return message.channel.send(output);
-            }
+        }else {
+          let wideyurr = input.join(' ');
+          if (input.includes('yurr') | wideyurr.includes('y u r r')) {
+            return message.channel.send(output);
           }
         }
       }
