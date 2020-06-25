@@ -7,11 +7,13 @@ module.exports = {
 	cooldown: 5,
 	execute(message, args) {
 		const data = [];
-    const { commands, adminCommands } = message.client;
+    const { commands, adminCommands, music } = message.client;
 
     if (!args.length) {
       data.push(`**Commands:**`);
       data.push(`•` + commands.map(command => command.name).join(`\n•`));
+      data.push(`**Music Commands**`);
+      data.push(`•` + music.map(music => music.name).join('\n•'));
       data.push(`**Admin Only Commands:**`);
       data.push(`•` + adminCommands.map(command => command.name).join('\n•'));
       data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`);
