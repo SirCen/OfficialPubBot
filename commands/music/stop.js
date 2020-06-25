@@ -12,6 +12,7 @@ module.exports = {
         }
         serverQueue.songs = [];
         message.channel.send('Stopping Songs and Leaving Channel!');
-        serverQueue.connection.dispatcher.end();
+        await serverQueue.connection.dispatcher.end();
+        serverQueue.voiceChannel.leave();
     }
 };

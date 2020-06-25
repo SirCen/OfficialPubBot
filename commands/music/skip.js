@@ -11,6 +11,6 @@ module.exports = {
             return message.channel.send('There is no song to skip!');
         }
         message.channel.send(`Skipping: **${serverQueue.songs[0].title}**`);
-        serverQueue.connection.dispatcher.end();
+        await serverQueue.connection.dispatcher.end();
     }
 };
