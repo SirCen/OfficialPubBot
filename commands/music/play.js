@@ -60,7 +60,7 @@ module.exports = {
         }
     },
 
-    play(message, song) {
+    async play(message, song) {
         const queue = message.client.queue;
         const guild = message.guild;
         const serverQueue = queue.get(message.guild.id);
@@ -71,7 +71,7 @@ module.exports = {
             return;
         }
 
-        const dispatcher = serverQueue.connection
+        const dispatcher = await serverQueue.connection
         .playStream(ytdl(song.url, {highWaterMark: 1<<25 }))
         .on("end", () => {
             serverQueue.songs.shift();
