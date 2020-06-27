@@ -34,7 +34,8 @@ module.exports = {
                     connection: null,
                     songs: [],
                     volume: 5,
-                    playing: true
+                    playing: true, 
+                    loop: false
                 };
 
                 queue.set(message.guild.id, queueConstruct);
@@ -74,8 +75,12 @@ module.exports = {
         const dispatcher = await serverQueue.connection
         .playStream(ytdl(song.url, {highWaterMark: 1<<25 }))
         .on("end", () => {
-            serverQueue.songs.shift();
-            this.play(message, serverQueue.songs[0]);
+            if (serverQueue.loop) {
+                this.play(message, serverQueue.songs[0]);
+            } else {
+                serverQueue.songs.shift();
+                this.play(message, serverQueue.songs[0]);
+            }
         })
         .on("error", error => console.log(error));
 
