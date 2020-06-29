@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 
 module.exports = {
     name: "play",
@@ -73,7 +73,7 @@ module.exports = {
         }
 
         const dispatcher = await serverQueue.connection
-        .playStream(ytdl(song.url, {highWaterMark: 1<<25 }))
+        .playOpusStream(await ytdl(song.url, {highWaterMark: 1<<25 }))
         .on("end", () => {
             if (serverQueue.loop) {
                 this.play(message, serverQueue.songs[0]);
