@@ -18,8 +18,11 @@ module.exports = {
             if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
                 return message.channel.send("I need permissions to join and speak in your voice channel!");
             }
-            if (!ytdl.validateID(args[0]) && !ytdl.validateURL(args[0])) {
-                return message.channel.send("Currently can only play using link or ID!");
+            let validate = await ytdl.validateURL(args[0]);
+
+            if (!validate) {
+                let search = require('./search.js');
+                return search.execute(message, args)
             }
             const songInfo = await ytdl.getInfo(args[0]);
             const song = {
