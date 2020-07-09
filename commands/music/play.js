@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 
 module.exports = {
     name: "play",
@@ -18,8 +18,11 @@ module.exports = {
             if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
                 return message.channel.send("I need permissions to join and speak in your voice channel!");
             }
-            if (!ytdl.validateID(args[0]) && !ytdl.validateURL(args[0])) {
-                return message.channel.send("Currently can only play using link or ID!");
+            let validate = await ytdl.validateURL(args[0]);
+
+            if (!validate) {
+                let search = require('./search.js');
+                return search.execute(message, args)
             }
             const songInfo = await ytdl.getInfo(args[0]);
             const song = {
@@ -33,8 +36,9 @@ module.exports = {
                     voiceChannel: voiceChannel,
                     connection: null,
                     songs: [],
-                    volume: 5,
-                    playing: true
+                    volume: 1,
+                    playing: true, 
+                    loop: false
                 };
 
                 queue.set(message.guild.id, queueConstruct);
@@ -72,10 +76,14 @@ module.exports = {
         }
 
         const dispatcher = await serverQueue.connection
-        .playStream(ytdl(song.url, {highWaterMark: 1<<25 }))
+        .playOpusStream(await ytdl(song.url, {highWaterMark: 1<<25 }))
         .on("end", () => {
-            serverQueue.songs.shift();
-            this.play(message, serverQueue.songs[0]);
+            if (serverQueue.loop) {
+                this.play(message, serverQueue.songs[0]);
+            } else {
+                serverQueue.songs.shift();
+                this.play(message, serverQueue.songs[0]);
+            }
         })
         .on("error", error => console.log(error));
 
