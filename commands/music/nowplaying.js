@@ -2,6 +2,7 @@ module.exports = {
     name: "nowplaying",
     description: "Shows the current song that is playing",
     args: false,
+    usage: '',
     execute(message, args) {
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!serverQueue) {

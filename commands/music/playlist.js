@@ -4,6 +4,7 @@ module.exports = {
     name: "playlist",
     description: "Shows all the songs in the queue",
     args: false,
+    usage: '',
     execute(message, args) {
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!serverQueue) {

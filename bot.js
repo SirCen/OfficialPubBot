@@ -5,7 +5,6 @@ const logger = require('winston');
 const { prefix, adminPrefix, token } = require('./config.json');
 const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
-const ytdl = require('ytdl-core');
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
