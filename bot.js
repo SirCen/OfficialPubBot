@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const Client = require('./client/client');
 const fs = require('fs');
 const logger = require('winston');
-const { prefix, adminPrefix, token } = require('./config.json');
+const { prefix, token } = require('./config.json');
 const Tools = require('./sql/databaseTools');
 const alphabet = require('emoji-alphabet').alphabet;
 
@@ -131,7 +131,7 @@ client.on('message', async message => {
 
 //Im response
 client.on('message', async message => {
-  if (message.content.startsWith(adminPrefix) || message.content.startsWith(prefix)) {
+  if (message.content.startsWith(prefix)) {
     return;
   }else {
     let get = await tools.getimDisabled(message);
@@ -175,7 +175,7 @@ client.on('message', async message => {
 
 //Yurr Response
 client.on('message', async message => {
-  if (message.content.startsWith(adminPrefix) || message.content.startsWith(prefix)) {
+  if (message.content.startsWith(prefix)) {
     return;
   }else {
     const get = await tools.getyurrDisabled(message);
