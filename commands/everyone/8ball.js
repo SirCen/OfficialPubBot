@@ -12,13 +12,13 @@ module.exports = {
                       "Reply hazy, try again", "Ask again later", "Better not tell you now", "Cannot predict now",
                       "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no",
                       "Outlook not so good", "Very doubtful"];
-    const data = [];
     let question = args.join(' ');
     let embed = new RichEmbed()
     .setColor(10761451)
     .setTitle(`**Magic 8Ball**`)
     .setThumbnail('https://i.imgur.com/wU8GXl0.png')
     .addField(`**Question asked by ${message.author.username}**`, question)
+    .addBlankField()
     .addField('**MAGIC 8BALL SAYS!**', ballAnswers[rand])
     .setTimestamp();
     return message.channel.send({embed: embed});
