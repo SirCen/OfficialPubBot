@@ -7,9 +7,9 @@ module.exports = {
       var newMessage = message.content.slice(5);
       var rand = Math.floor(Math.random()*2);
       if (rand === 0) {
-        return message.channel.send(newMessage + ' is HOT!');
+        return message.channel.send(newMessage + ' is HOT! :fire:');
       }else if (rand === 1) {
-        return message.channel.send(newMessage + ' is NOT HOT!');
+        return message.channel.send(newMessage + ' is NOT HOT! :snowflake:');
       }
   }
 };
