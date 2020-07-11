@@ -9,7 +9,11 @@ module.exports = class extends Client {
 
         this.commands = new Collection();
         
-        this.adminCommands = new Collection();
+		this.adminCommands = new Collection();
+		
+		this.music = new Collection();
+
+		this.translate = new Collection();
 
 		this.queue = new Map();
 
