@@ -56,7 +56,7 @@ module.exports = {
                 }
             } else {
                 serverQueue.songs.push(song);
-                return message.channel.send(`**${song.title}** was added to the queue!`);
+                return message.channel.send(`**${song.title}** was added to the queue in position #${serverQueue.songs.length}`);
             }
         } catch (error) {
             console.log(error);

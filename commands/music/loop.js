@@ -2,6 +2,7 @@ module.exports = {
     name: "loop",
     description: "Loops the current song",
     args: true,
+    usage: '<t to loop, f to stop loop>',
     async execute(message, args) {
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!message.member.voiceChannel) {
