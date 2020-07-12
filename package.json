@@ -16,6 +16,7 @@
 	},
 	"author": "Chris Wilsher // SirCen",
 	"dependencies": {
+		"cheerio": "^1.0.0-rc.3",
 		"discord-sensei": "^1.0.8",
 		"discord.js": "^11.5.1",
 		"discord.js-commando": "^0.10.0",
