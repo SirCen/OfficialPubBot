@@ -31,18 +31,18 @@ module.exports = {
             return message.channel.send('Enter text to be translated');
         }
 
-        const textshit = args.join(' ');
+        const input = args.join(' ');
         const ppg = new PapagoApi();
-        const promise = ppg.translate(textshit, source, target);
+        const promise = ppg.translate(input, source, target);
 
         function send(result) {
             const embed = new RichEmbed()
             .setColor('#008080')
-            .setTitle('Translation')
+            .setDescription(`Translation of '${input}'`)
             .setFooter('Powered by Papago')
-            .addField('Source Language', result.source, true)
-            .addField('Target Lanuage', result.target, true)
-            .addField('Result', result.text);
+            .addField('Result', result.text)
+            .addField('Source Language', langs[result.source], true)
+            .addField('Target Lanuage', langs[result.target], true);
             message.channel.send(embed);
         }
 
