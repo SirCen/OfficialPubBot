@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 module.exports = class koreanDictApi {
     parseResult(html, maxSenses) {
         const $ = cheerio.load(html, {normalizeWhitespace: true});
-        this.entries = $('./search_list').children();
+        this.entries = $('.search_list').children();
         const count = this.entries.length;
         const dictEntries = [];
 
@@ -19,18 +19,18 @@ module.exports = class koreanDictApi {
             const h = title.text().match(/\(.*\)/);
             const p = title.text().match(/\[(.*?)\]/);
 
-            let s;
+            let starsCount;
             if ($(title).find('.score_3').length > 0) {
-                s = 3;
+                starsCount = 3;
             } else if ($(title).find('.score_2').length > 0) {
-                s = 2;
+                starsCount = 2;
             } else if ($(title).find('score_1').length > 0) {
-                s = 1;
+                starsCount = 1;
             } else {
-                s = 0;
+                starsCount = 0;
             }
 
-            dictEntry.stars = s;
+            dictEntry.stars = starsCount;
 
             let hanja;
             if (h) {
@@ -54,7 +54,7 @@ module.exports = class koreanDictApi {
                 if (maxSenses && j > maxSenses) {
                     break;
                 }
-                const current = senses.eq(i).children();
+                const current = senses.eq(j).children();
                 const sense = {};
                 sense.meaning = current.eq(0).text().replace(/\s+/g, ' ').replace(/\d*\.\d*/, '').trim();
                 sense.definition = current.eq(1).text().replace(/\s+/g, ' ').trim();

@@ -1,5 +1,7 @@
 module.exports = class PageCreator {
     constructor(author, pages, back, next, firstLast, bookmark, endMessage) {
+        this.current = 0;
+        this.total = pages.length;
         this.author = author;
         this.pages = pages;
         this.back = back;
@@ -32,7 +34,7 @@ module.exports = class PageCreator {
                         this.message.react('🔖');
                     }
                     const reactionFilter = (reaction, user) => {
-                        if (reaction.me && emojis.include(reaction.emoji.name)) {
+                        if (reaction.me && emojis.includes(reaction.emoji.name)) {
                             if (user.id === this.author.id && user.id !== this.message.author.id) {
                                 return true;
                             }
@@ -40,7 +42,7 @@ module.exports = class PageCreator {
                         return false;
                     };
 
-                    this.collector = this.message.createReactionCollector(reactionFilter, {time: 3000});
+                    this.collector = this.message.createReactionCollector(reactionFilter, {time: 300000});
                     this.collector.on('collect', (reaction) => {
                         if (this.hasPermission) {
                             reaction.remove(this.author);
@@ -87,7 +89,7 @@ module.exports = class PageCreator {
                         return false;
                     };
 
-                    this.collector = this.message.createReactionCollector(reactionFilter, {time: 3000});
+                    this.collector = this.message.createReactionCollector(reactionFilter, {time: 300000});
                     this.collector.on('collect', (reaction) => {
                         if (this.hasPermission) {
                             reaction.remove(this.author);
@@ -105,7 +107,7 @@ module.exports = class PageCreator {
                                 break;
                             case this.next:
                                 if (this.current !== this.total - 1) {
-                                    this.current = this.total - 1;
+                                    this.current += 1;
                                 }
                                 break;
                             case this.last:

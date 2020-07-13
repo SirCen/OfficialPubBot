@@ -17,7 +17,8 @@ module.exports = {
             const englishEmbed = WordSearchEmbed('en', input, message.author.username, isDm, result);
             const koreanEmbed = WordSearchEmbed('ko', input, message.author.username, isDm, result);
             if (result.length === 0) {
-                return answerMessage.edit(englishEmbed);
+                answerMessage.edit(englishEmbed);
+                return;
             }
             const pages = [englishEmbed, koreanEmbed];
             const pageCreator = new PageCreator(message.author, pages, '🇬🇧', '🇰🇷', false, true, 'You can no longer switch languages. Anyone can still bookmark this message.');
@@ -31,6 +32,7 @@ module.exports = {
 
         message.channel.send(pendingEmbed).then((answerMessage) => {
             promise.then((result) => {
+                console.log(result);
                 send(result, answerMessage);
             }, (err) => {
                 throw new Error(err);
@@ -54,7 +56,7 @@ module.exports = {
                             let d;
                             if (language === 'en') {
                                 d = `${j+1}.__${sense.meaning}__\r\n${sense.translation}`;
-                            } else if (langauge === 'ko') {
+                            } else if (language === 'ko') {
                                 d = `${j+1}.__${sense.meaning}__\r\n${sense.definition}`;
                             }
                             if (`${defs.join('\n')}\n${d}`.length < 1024) {
@@ -62,7 +64,7 @@ module.exports = {
                             }
                         }
                     }
-                    if (langauge === 'en') {
+                    if (language === 'en') {
                         embed.addField(`**${entry.word}**${entry.hanja ? ` (${entry.hanja})` : ''} - ${entry.wordTypeTranslated}${entry.pronouncitation ? ` - [${entry.pronouncitation}]` : ''}${entry.stars > 0 ? ' ' + '★'.repeat(entry.stars): ''}`, defs.join('\n'));
                     } else if (language === 'ko') {
                         embed.addField(`**${entry.word}**${entry.hanja ? ` (${entry.hanja})` : ''} - ${entry.wordType}${entry.pronouncitation ? ` - [${entry.pronouncitation}]` : ''}${entry.stars > 0 ? ' ' + '★'.repeat(entry.stars): ''}`, defs.join('\n'));
