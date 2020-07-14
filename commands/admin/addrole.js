@@ -5,6 +5,7 @@ const permissions = new Discord.Permissions("MANAGE_GUILD");
 const tools = new Tools();
 module.exports = {
     name: 'addrole',
+    aliases: ['autorole', 'ar', 'joinrole'],
     description: 'Adds a role to be automattically added to users when they join',
     args: true,
     usage: '<role name to be added on user join>',

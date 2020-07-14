@@ -18,6 +18,7 @@ const client = new Client();
 client.commands = new Discord.Collection();
 client.adminCommands = new Discord.Collection();
 client.music = new Discord.Collection();
+client.translate = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands/everyone').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/everyone/${file}`);
@@ -32,6 +33,11 @@ const music = fs.readdirSync('./commands/music').filter(file => file.endsWith('.
 for (const file of music) {
   const command = require(`./commands/music/${file}`);
   client.music.set(command.name, command);
+}
+const translate = fs.readdirSync('./commands/translation').filter(file => file.endsWith('.js'));
+for (const file of translate) {
+  const command = require(`./commands/translation/${file}`);
+  client.translate.set(command.name, command);
 }
 
 //logs and sets activity when bot is ready
@@ -79,8 +85,8 @@ client.on('message', async message => {
   if(commandName == "") {
     return;
   }
-  if (client.commands.has(commandName)) {
-    const command = client.commands.get(commandName);
+  const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  if (command) {
     if (command.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
       if (command.usage) {
@@ -94,8 +100,9 @@ client.on('message', async message => {
   	    console.error(error);
         return message.channel.send('There was an error executing that command.');
     }
-  }else if (client.adminCommands.has(commandName)) {
-    const adminCommand = client.adminCommands.get(commandName);
+  }
+  const adminCommand = client.adminCommands.get(commandName) || client.adminCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  if (adminCommand) {
     if(adminCommand.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
       if (adminCommand.usage) {
@@ -109,8 +116,9 @@ client.on('message', async message => {
       console.error(error);
       return message.channel.send('There was an error executing that command.');
     }
-  } else if (client.music.has(commandName)) {
-    const music = client.music.get(commandName);
+  }
+  const music = client.music.get(commandName) || client.music.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  if (music) {
     if(music.args && !args.length) {
       let reply = `You didn't provide any arguments, ${message.author}`;
       if (adminCommand.usage) {
@@ -124,7 +132,24 @@ client.on('message', async message => {
       console.error(error);
       return message.channel.send('There was an error executing that command.');
     }
-  } else {
+  }
+  const trans = client.translate.get(commandName) || client.translate.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  if (trans) {  
+    if (trans.args && !args.length) {
+      let reply = `You didn't provide any arguments, ${message.author}`;
+      if (trans.usage) {
+        reply += `\nThe proper usage would be: \'${prefix}${trans.name} ${trans.usage}`;
+      }
+      return message.channel.send(reply);
+    }
+    try {
+      trans.execute(message, args);
+    } catch (error) {
+      console.error(error);
+      return message.channel.send('There was an error executing that command.');
+    }
+  }
+  if (!command && !adminCommand && !music && !trans) {
     return message.channel.send('That is not a valid command, please try again :))');
   }
 });
