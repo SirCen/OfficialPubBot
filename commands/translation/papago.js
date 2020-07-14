@@ -1,4 +1,4 @@
-const PapagoApi = require('../../api/papagoapi');
+const PapagoApi = require('../../api/papagoAPI.js');
 const { RichEmbed } = require('discord.js');
 const langs = require('../../utils/langs.js');
 

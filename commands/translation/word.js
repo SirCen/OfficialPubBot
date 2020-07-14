@@ -1,4 +1,4 @@
-const KrDicApi = require('../../api/koreanDictApi');
+const KrDicApi = require('../../api/koreanDictAPI.js');
 const PageCreator = require('../../utils/pageCreator');
 const { RichEmbed } = require('discord.js');
 
