@@ -32,7 +32,6 @@ module.exports = {
 
         message.channel.send(pendingEmbed).then((answerMessage) => {
             promise.then((result) => {
-                console.log(result);
                 send(result, answerMessage);
             }, (err) => {
                 throw new Error(err);
