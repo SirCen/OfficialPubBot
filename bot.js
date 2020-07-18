@@ -50,6 +50,37 @@ client.once('ready', () => {
     tools.ComDisabled.sync();
 });
 
+//adds guilds to database on join
+client.on('guildCreate', async guild => {
+  try {
+    let added = await tools.ComDisabled.findOne({attributes:["guildID"], where : {guildID: guild.id}});
+    if (added) {
+      return;
+    } else {
+      let addNewGuild = await tools.guildAdd(guild);
+      if (!addNewGuild) {
+        console.log('Adding failed');
+        return;
+      }
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+//removes guilds from database on leave
+client.on('guildDelete', async guild => {
+  try {
+    let removed = await tools.guildDelete(guild);
+    if (!removed) {
+      console.log('Deleting guild failed');
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 //add role on join
 client.on('guildMemberAdd', async guildMember => {
   try {
