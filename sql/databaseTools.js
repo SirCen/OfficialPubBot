@@ -210,4 +210,39 @@ module.exports = class Tools {
             console.log("Error: " + e);
         }
     }
+
+    async guildAdd(guild) {
+        try {
+            const create = await this.ComDisabled.create({
+                guildID: guild.id,
+                channelID: null,
+                imDisabled: 0,
+                yurrDisabled: 0
+            });
+            if (!create) {
+                console.log('Unable to add guild');
+            } else {
+                return true;
+            }
+        } catch (e) {
+            console.log('Error: ', e);
+        }
+    }
+
+    async guildDelete(guild) {
+        try {
+            let find = await this.ComDisabled.findAll({attributes: ['guildID'], where : {guildID: guild.id}});
+            if (find) {
+                let deleted = await this.ComDisabled.destroy({where: { guildID : guild.id}});
+                if (deleted) {
+                    console.log('guild removed: ' + guild.id);
+                    return true;
+                } else {
+                    console.log('unable to delete');
+                }
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 };
