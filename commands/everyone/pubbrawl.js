@@ -16,7 +16,7 @@ module.exports = {
         }
         var user1Health = 50; 
         var user2Health = 50;
-        let weapon = ['stabbed', 'set fire to', 'shot', 'curb stomped', 'sliced', 'punched', 'kicked', 'choke slammed', 'RKO\'ed', 'waterboarded', 'bitch slapped', 'backhanded', 'tackled', 'hip threw', 'elbow dropped'];
+        let weapon = ['stabbed', 'set fire to', 'shot', 'curb stomped', 'sliced', 'punched', 'kicked', 'choke slammed', 'RKO\'ed', 'waterboarded', 'bitch slapped', 'backhanded', 'tackled', 'hip threw', 'elbow dropped', 'drop kicked'];
         let damage = Math.floor(Math.random()*24)+1;
         let rand = Math.floor(Math.random()*weapon.length);
         let embed = fightEmbed(user1, user2, user1Health, user2Health, weapon[rand], damage);
@@ -49,9 +49,11 @@ module.exports = {
                     }
                     
                 }else if (user1Health <= 0) {
+                    user1Health = 0;
                     msg.edit(fightEmbed(user1, user2, user1Health, user2Health).setDescription(`:trophy: ${user2.username} HAS DEFEATED ${user1.username}!`));
                     return;
                 } else if (user2Health <= 0) {
+                    user2Health = 0;
                     msg.edit(fightEmbed(user1, user2, user1Health, user2Health).setDescription(`:trophy: ${user1.username} HAS DEFEATED ${user2.username}!`));
                     return;
                 }
