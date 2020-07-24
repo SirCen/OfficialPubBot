@@ -14,8 +14,8 @@ module.exports = {
         } else {
             user2 = message.mentions.users.first();
         }
-        var user1Health = 50; 
-        var user2Health = 50;
+        var user1Health = 100; 
+        var user2Health = 100;
         let weapon = ['stabbed', 'set fire to', 'shot', 'curb stomped', 'sliced', 'punched', 'kicked', 'choke slammed', 'RKO\'ed', 'waterboarded', 'bitch slapped', 'backhanded', 'tackled', 'hip threw', 'elbow dropped', 'drop kicked'];
         let damage = Math.floor(Math.random()*24)+1;
         let rand = Math.floor(Math.random()*weapon.length);
@@ -25,8 +25,8 @@ module.exports = {
         function fightEmbed(user1, user2, user1Health, user2Health) {
             let newEmbed = new RichEmbed()
             .setTitle(`A BRAWL STARTED BETWEEN **${user1.username}** AND **${user2.username}**!`)
-            .addField(`${user1.username}`, user1Health + '/50HP', true)
-            .addField(`${user2.username}`, user2Health + '/50HP', true);
+            .addField(`${user1.username}`, user1Health + '/100HP', true)
+            .addField(`${user2.username}`, user2Health + '/100HP', true);
             return newEmbed;
         }
 
@@ -58,7 +58,7 @@ module.exports = {
                     return;
                 }
                 return;
-            }, 3000)
+            }, 2500)
         });
     }
 }
