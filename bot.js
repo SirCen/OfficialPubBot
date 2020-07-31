@@ -47,10 +47,9 @@ client.once('ready', () => {
     logger.info(client.user.username + ' - (' + client.user.id + ')');
     client.user.setActivity(`Currently in Beta | ${prefix}help`);
     logger.info('Servers: ');
-    client.guilds.forEach((guild) => {
-      logger.info('-' + guild.name + '-' + guild.id);	
-    });
-    logger.info(client.commands);
+    // client.guilds.tap((guild) => {
+    //   logger.info('-' + guild.name + '-' + guild.id);	
+    // });
     tools.Tags.sync();
     tools.ComDisabled.sync();
 });
