@@ -86,6 +86,14 @@ client.on('guildDelete', async guild => {
   }
 });
 
+client.on('disconnect', () => {
+  logger.info('Client has disconnected, and will not attempt to reconnect');
+});
+
+client.on("error", function(error){
+  console.error(`client's WebSocket encountered a connection error: ${error}`);
+});
+
 //add role on join
 client.on('guildMemberAdd', async guildMember => {
   try {
