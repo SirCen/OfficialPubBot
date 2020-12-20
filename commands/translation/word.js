@@ -1,6 +1,6 @@
 const KrDicApi = require('../../api/koreanDictAPI.js');
 const PageCreator = require('../../utils/pageCreator');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'word',
@@ -25,7 +25,7 @@ module.exports = {
             pageCreator.start(answerMessage);
         }
 
-        const pendingEmbed = new RichEmbed()
+        const pendingEmbed = new MessageEmbed()
         .setDescription(`Looking over my books for ${message.author.username} :eyes:`)
         .setColor('#008080')
         .setAuthor('Pub Bot');
@@ -39,7 +39,7 @@ module.exports = {
         });
 
         function WordSearchEmbed(language, query, username, isDM, searchResults) {
-            const embed = new RichEmbed()
+            const embed = new MessageEmbed()
             .setColor('#008080')
             .setAuthor('Pub Bot')
             .setDescription(`Search results for **${query}**`);

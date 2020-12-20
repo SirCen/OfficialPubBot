@@ -21,7 +21,7 @@ module.exports = {
                 return message.channel.send('I do not have permission to kick this member!');
             }
             await message.guild.member(user).kick(kickReason);
-            const kickConfirmation = new Discord.RichEmbed()
+            const kickConfirmation = new Discord.MessageEmbed()
             .setColor('RED')
             .setDescription(`✅ ${user.tag} has been successfully kicked!`);
             return message.channel.send({embed: kickConfirmation});

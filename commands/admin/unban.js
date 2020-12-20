@@ -21,7 +21,7 @@ module.exports = {
                 const bannedUser = banList.find(user => user.id === User);
                 if (bannedUser) {
                     await message.guild.unban(bannedUser);
-                    const unbanConfirmation = new Discord.RichEmbed()
+                    const unbanConfirmation = new Discord.MessageEmbed()
                     .setColor('GREEN')
                     .setDescription(`✅ ${member} has been successfully unbanned!`);
                     return message.channel.send({embed: unbanConfirmation});

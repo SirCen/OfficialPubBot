@@ -13,7 +13,7 @@ module.exports = {
                 return message.channel.send('Something went wrong');
             }
             let videos = res.videos.slice(0,10);
-            let embed = new Discord.RichEmbed();
+            let embed = new Discord.MessageEmbed();
             embed.setTitle(`Search Results for \'${args.join(' ')}\'`)
             .setColor('RED');
             for (var i in videos) {

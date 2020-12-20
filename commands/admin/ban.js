@@ -31,7 +31,7 @@ module.exports = {
             return message.channel.send('I do not have permission to ban this member!');
         }
         await message.guild.ban(user, {reason: banReason});
-        const banConfirmation = new Discord.RichEmbed()
+        const banConfirmation = new Discord.MessageEmbed()
         .setColor('RED')
         .setDescription(`✅ ${user.tag} has been successfully banned!`);
         return message.channel.send({embed: banConfirmation});

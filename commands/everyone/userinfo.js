@@ -43,10 +43,6 @@ module.exports = {
                     {
                         name: "Server Joined On: ",
                         value: memb.joinedAt.toUTCString(),
-                    },
-                    {
-                        name: "Roles: ",
-                        value: memb.roles.map(r => `${r}`).join(' | '),
                     }
                 ]
             }});
@@ -85,10 +81,6 @@ module.exports = {
                     {
                         name: "Server Joined On: ",
                         value: memb.joinedAt.toUTCString(),
-                    },
-                    {
-                        name: "Roles: ",
-                        value: memb.roles.map(r => `${r}`).join(' | '),
                     }
                 ]
             }});

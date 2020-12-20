@@ -1,5 +1,5 @@
 const PapagoApi = require('../../api/papagoAPI.js');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const langs = require('../../utils/langs.js');
 
 module.exports = {
@@ -36,7 +36,7 @@ module.exports = {
         const promise = ppg.translate(input, source, target);
 
         function send(result) {
-            const embed = new RichEmbed()
+            const embed = new MessageEmbed()
             .setColor('#008080')
             .setDescription(`Translation of '${input}'`)
             .setFooter('Powered by Papago')

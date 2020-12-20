@@ -1,5 +1,5 @@
 const { prefix } = require('../../config.json');
-const {RichEmbed} = require('discord.js');
+const {MessageEmbed} = require('discord.js');
 
 module.exports = {
 	name: 'help',
@@ -9,7 +9,7 @@ module.exports = {
 	cooldown: 5,
 	execute(message, args) {
     const { commands, adminCommands, music, translate } = message.client;
-    let embed = new RichEmbed()
+    let embed = new MessageEmbed()
     .setColor("#F6C101")
     .setTitle('Pub Bot Commands!')
     .setDescription(`This is all of Pub Bot\'s commands!`)
@@ -29,28 +29,28 @@ module.exports = {
     const musicCommand = music.get(name);
     const transCommand = translate.get(name);
     if (command) {
-      let commandEmbed = new RichEmbed()
+      let commandEmbed = new MessageEmbed()
       .setTitle(`**${command.name}**`)
       .setDescription(`**${command.description}**`)
       .addField(`**Usage:**`, `${prefix}${command.name} ${command.usage}`)
       .setColor('#F6C101');
       return message.channel.send(commandEmbed);
     }else if (adminCommand) {
-      let acommandEmbed = new RichEmbed()
+      let acommandEmbed = new MessageEmbed()
       .setTitle(`**${adminCommand.name}**`)
       .setDescription(`**${adminCommand.description}**`)
       .addField(`**Usage:**`, `${prefix}${adminCommand.name} ${adminCommand.usage}`)
       .setColor('#F6C101');
       return message.channel.send(acommandEmbed);
     } else if (musicCommand) {
-      let musicCommandEmbed = new RichEmbed()
+      let musicCommandEmbed = new MessageEmbed()
       .setTitle(`**${musicCommand.name}**`)
       .setDescription(`**${musicCommand.description}**`)
       .addField(`**Usage:**`, `${prefix}${musicCommand.name} ${musicCommand.usage}`)
       .setColor('#F6C101');
       return message.channel.send(musicCommandEmbed);
     } else if (transCommand) {
-      let transCommandEmbed = new RichEmbed()
+      let transCommandEmbed = new MessageEmbed()
       .setTitle(`**${transCommand.name}**`)
       .setDescription(`**${transCommand.description}**`)
       .addField(`**Usage:**`, `${prefix}${transCommand.name} ${transCommand.usage}`)

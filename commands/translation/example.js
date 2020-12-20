@@ -1,5 +1,5 @@
 const SentenceExampleAPI = require('../../api/sentenceExampleAPI.js');
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'example',
@@ -20,7 +20,7 @@ module.exports = {
             answerMessage.edit(exampleEmbed);
         }
 
-        const pendingEmbed = new RichEmbed()
+        const pendingEmbed = new MessageEmbed()
         .setDescription(`Looking over my books for ${message.author.username} :eyes:`)
         .setColor('#008080')
         .setAuthor('Pub Bot');
@@ -34,7 +34,7 @@ module.exports = {
         });
 
         function ExampleEmbed(query, searchResults) {
-            const embed = new RichEmbed()
+            const embed = new MessageEmbed()
             .setDescription(`Example Sentences for for: **${query}**`)
             .setColor('#008080')
             .setAuthor('Pub Bot');

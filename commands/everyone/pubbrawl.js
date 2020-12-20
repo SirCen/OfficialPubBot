@@ -1,4 +1,4 @@
-const { RichEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
     name: 'pubbrawl',
@@ -10,7 +10,8 @@ module.exports = {
         var user1 = message.author;
         var user2;
         if (!ment) {
-            user2 = await message.guild.members.random().user;
+            //user = await message.guild.members.fetch(); fix this
+            return message.channel.send("Please @ who you want to fight!");
         } else {
             user2 = message.mentions.users.first();
         }
@@ -23,7 +24,7 @@ module.exports = {
         let count = 1;
 
         function fightEmbed(user1, user2, user1Health, user2Health) {
-            let newEmbed = new RichEmbed()
+            let newEmbed = new MessageEmbed()
             .setTitle(`A BRAWL STARTED BETWEEN **${user1.username}** AND **${user2.username}**!`)
             .addField(`${user1.username}`, user1Health + '/100HP', true)
             .addField(`${user2.username}`, user2Health + '/100HP', true);
