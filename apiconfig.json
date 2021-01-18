@@ -1,7 +1,7 @@
 {
 "krdict_url": "https://krdict.korean.go.kr/api/",
-"krdict_token": "9357DEA73E0B171932A6E1F76687D41A",
+"krdict_token": "TOKEN HERE",
 "papago_url": "https://openapi.naver.com/v1/papago/n2mt",
-"papago_client_id": "GMxBRGdpcE6nKGhBBlNa",
-"papago_client_secret": "HMNLdnwIIH"
+"papago_client_id": "ID HERE",
+"papago_client_secret": "SECRET HERE"
 }
